@@ -8,13 +8,13 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  io.emit('chat message', 'A user has joined the chat');
+  io.emit('chat message', {msg: 'A user has joined the chat', color: "blue"});
   socket.on('chat message', msg => {
     io.emit('chat message', msg);
   });
 
   socket.on('disconnect', () => {
-    io.emit('chat message', 'A user has left the chat');
+    io.emit('chat message', {msg: 'A user has left the chat', color: "blue"});
   });
 });
 

@@ -38,14 +38,15 @@
         e.preventDefault();
         if (input.value) {
           var timestamp = new Date();
-          socket.emit('chat message', timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ': <' + input.value + '>');
+          socket.emit('chat message', {msg: timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ': <' + input.value + '>', color: "black"});
           input.value = '';
         }
       });
 
       socket.on('chat message', function(msg) {
         var item = document.createElement('li');
-        item.textContent = msg;
+        item.textContent = msg.msg;
+        item.style.color = msg.color;
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
       });
