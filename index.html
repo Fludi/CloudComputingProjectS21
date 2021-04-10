@@ -37,7 +37,8 @@
       form.addEventListener('submit', function(e) {
         e.preventDefault();
         if (input.value) {
-          socket.emit('chat message', Date.now() + ' ' + username + ': ' + input.value);
+          var timestamp = new Date();
+          socket.emit('chat message', timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ': <' + input.value + '>');
           input.value = '';
         }
       });
