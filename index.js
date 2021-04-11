@@ -9,6 +9,9 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
   io.emit('chat message', {msg: 'A user has joined the chat', color: "blue"});
+ // socket.on("hello", (arg) => {
+ //   io.emit('hello', arg);
+ // });
   socket.on('chat message', msg => {
     io.emit('chat message', msg);
   });

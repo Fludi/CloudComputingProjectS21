@@ -10,11 +10,11 @@
       #input:focus { outline: none; }
       #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #77ff7f; }
 
-      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages { list-style-type: none; margin-left: 200px; margin-top: 0; padding: 0;}
       #messages > li { padding: 0.5rem 1rem; }
       #messages > li:nth-child(odd) { background: #efefef; }
 
-      #users-block { width:190px; height: 100vh; margin-right: 20px; float:left; background: #f5f5dc; word-wrap: break-word;}
+      #users-block { width:190px; height: 100vh; float:left; background: #f5f5dc; word-wrap: break-word; position: fixed; overflow: scroll;}
 
     </style>
     <script type="text/javascript">
@@ -25,11 +25,7 @@
   </head>
   <body>
     <div id="users-block">
-      <ul id="user" style="margin-right:15px">
-        <li>Coffe</li>
-        <li>Milk</li>
-        <li>Coffe</li>
-      </ul>
+      <ul id="user" style="margin-right:15px"></ul>
     </div>
     <ul id="messages"></ul>
     <form id="form" action="">
@@ -39,9 +35,12 @@
 
     <script>
       var socket = io();
+      //var user = document.getElementById('user');
       var messages = document.getElementById('messages');
       var form = document.getElementById('form');
       var input = document.getElementById('input');
+
+      //socket.emit('hello', name);
 
       form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -52,6 +51,12 @@
         }
       });
 
+    /*  socket.on("hello", (arg) => {
+        var item = document.createElement('li');
+        item.textContent = arg;
+        user.appendChild(item);
+      });
+    */
       socket.on('chat message', function(msg) {
         var item = document.createElement('li');
         item.textContent = msg.msg;
