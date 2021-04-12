@@ -8,7 +8,6 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  io.emit('chat message', {msg: 'A user has joined the chat', color: "blue"});
  // socket.on("hello", (arg) => {
  //   io.emit('hello', arg);
  // });
@@ -16,8 +15,13 @@ io.on('connection', (socket) => {
     io.emit('chat message', msg);
   });
 
+  socket.on('join', msg => {
+    socket.name = msg
+    io.emit('join', socket.name + " has joined the chat");
+  });
+
   socket.on('disconnect', () => {
-    io.emit('chat message', {msg: 'A user has left the chat', color: "blue"});
+    io.emit('join', socket.name + " has left the chat");
   });
 });
 

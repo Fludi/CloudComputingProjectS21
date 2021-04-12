@@ -42,11 +42,24 @@
 
       //socket.emit('hello', name);
 
+      socket.on("connect", () => {
+        socket.emit("join", username.toString())
+              }
+      );
+
+      socket.on('join', function(msg) {
+        var item = document.createElement('li');
+        item.textContent = msg;
+        item.style.color = "blue";
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+
       form.addEventListener('submit', function(e) {
         e.preventDefault();
         if (input.value) {
           var timestamp = new Date();
-          socket.emit('chat message', {msg: timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ': <' + input.value + '>', color: "black"});
+          socket.emit('chat message', timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ': <' + input.value + '>');
           input.value = '';
         }
       });
@@ -60,7 +73,7 @@
       socket.on('chat message', function(msg) {
         var item = document.createElement('li');
         item.textContent = msg.msg;
-        item.style.color = msg.color;
+        //item.style.color = "black";
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
       });
