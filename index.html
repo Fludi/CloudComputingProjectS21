@@ -52,7 +52,7 @@
               }
       );
 
-      socket.on('join', function(msg) {
+      socket.on('hello', function(msg) {
         var item = document.createElement('li');
         item.textContent = msg;
         item.style.color = "blue";
@@ -60,11 +60,11 @@
         window.scrollTo(0, document.body.scrollHeight);
       });
 
-      socket.on('hello', function(name) {
+      socket.on('join', function(name) {
         var item = document.createElement('li');
         item.textContent = name;
         user.appendChild(item);
-      })
+      });
 
       sendData.addEventListener("click", function (e) {
         e.preventDefault();
@@ -79,12 +79,14 @@
         }
       });
 
-    /*  socket.on("hello", (arg) => {
+      /*
+      socket.on('leave', function(name) {
         var item = document.createElement('li');
-        item.textContent = arg;
+        item.textContent = name;
         user.appendChild(item);
       });
-    */
+      */
+
       socket.on('chat message', function(msg) {
         var item = document.createElement('li');
         item.textContent = msg;
