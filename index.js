@@ -18,6 +18,9 @@ io.on('connection', (socket) => {
   socket.on('join', msg => {
     socket.name = msg
     io.emit('join', socket.name + " has joined the chat");
+
+    //has do be reworked!
+    io.emit('hello', socket.name);
   });
 
   socket.on('disconnect', () => {
