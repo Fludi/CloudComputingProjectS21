@@ -29,16 +29,21 @@
     </div>
     <ul id="messages"></ul>
     <form id="form" action="">
-      <input id="input" autocomplete="off" /><button>Send</button>
+      <input id="input" autocomplete="off" />
+      <button id="sendMsg">Send Msg</button>
+      <button id="sendData">Send Data</button>
     </form>
+
     <script src="/socket.io/socket.io.js"></script>
 
     <script>
       var socket = io();
       //var user = document.getElementById('user');
       var messages = document.getElementById('messages');
-      var form = document.getElementById('form');
+      var sendMsg = document.getElementById('sendMsg');
       var input = document.getElementById('input');
+      var sendData = document.getElementById('sendData')
+
 
       //socket.emit('hello', name);
 
@@ -55,7 +60,11 @@
         window.scrollTo(0, document.body.scrollHeight);
       });
 
-      form.addEventListener('submit', function(e) {
+      sendData.addEventListener("click", function (e) {
+        e.preventDefault();
+      });
+
+      sendMsg.addEventListener('click', function(e) {
         e.preventDefault();
         if (input.value) {
           var timestamp = new Date();
@@ -72,7 +81,7 @@
     */
       socket.on('chat message', function(msg) {
         var item = document.createElement('li');
-        item.textContent = msg.msg;
+        item.textContent = msg;
         //item.style.color = "black";
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
