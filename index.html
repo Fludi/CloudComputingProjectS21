@@ -25,7 +25,7 @@
   </head>
   <body>
     <div id="users-block">
-      <ul id="user" style="margin-right:15px"></ul>
+      <form id="user" style="margin-right:15px; padding: 18px" action=""></form>
     </div>
     <ul id="messages"></ul>
     <form id="form" action="">
@@ -64,10 +64,18 @@
         let userMap = new Map(online)
         user.innerHTML = " ";
         for (let person of userMap.values()){
-          var item = document.createElement('li');
-          item.textContent = person.toString();
-          item.style.color = "green";
-          user.appendChild(item);
+          var itemCheck = document.createElement('input');
+          var itemLabel = document.createElement('label');
+          var itemBr = document.createElement('br');
+          itemCheck.type ="checkbox";
+          itemCheck.id = person.toString();
+          itemCheck.value = person.toString();
+          itemLabel.for = person.toString()
+          itemLabel.textContent = person.toString();
+          itemLabel.style.color = "green";
+          user.appendChild(itemCheck);
+          user.appendChild(itemLabel);
+          user.appendChild(itemBr);
         }
       });
 
