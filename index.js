@@ -31,7 +31,7 @@ const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const port = process.env.PORT || 3000;
-let users = new Map();
+let onlineMap = new Map();
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
@@ -46,16 +46,17 @@ io.on('connection', (socket) => {
   });
 
   socket.on('join', name => {
-    users.set(socket.id, name);
-    run(name).catch(console.dir);
+    onlineMap.set(socket.id, name);
+    //run(name).catch(console.dir);
     io.emit('hello', name + " has joined the chat");
-    io.emit('join', Array.from(users));
+    io.emit('join', Array.from(onlineMap));
   });
 
   socket.on('disconnect', () => {
-    io.emit('hello', socket.name + " has left the chat");
-
+    io.emit('hello', onlineMap.get(socket.id) + " has left the chat");
+    onlineMap.delete(socket.id);
   //  io.emit('leave', socket.name);
+    io.emit('join', Array.from(onlineMap));
   });
 });
 
