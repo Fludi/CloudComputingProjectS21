@@ -66,6 +66,7 @@
         for (let person of userMap.values()){
           var item = document.createElement('li');
           item.textContent = person.toString();
+          item.style.color = "green";
           user.appendChild(item);
         }
       });
