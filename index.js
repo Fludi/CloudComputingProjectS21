@@ -18,6 +18,12 @@ async function run(name) {
           name: name
         }
     )
+    const randomUser = await db.collection('users').aggregate([ { $sample: { size: 1 } } ]).toArray();
+    console.log(randomUser);
+    //await client.close();
+    const xUser = await db.collection('users').aggregate([ { $sample: { size: 1 } } ]).toArray();
+    console.log(xUser);
+    await client.close();
   } catch (err) {
     console.log(err.stack);
   }
@@ -26,6 +32,37 @@ async function run(name) {
   }
 }
 
+async function getall(){
+  console.log("sad");
+  var MongoClient = require('mongodb').MongoClient;
+  var url = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
+
+  await MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db("cloudcomputingcluster");
+    dbo.collection("users").find({}).toArray(function(err, result) {
+      if (err) throw err;
+      console.log(result);
+      db.close();
+    });
+  });
+}
+
+async function getbyname(){
+  console.log("mit name");
+  var MongoClient = require('mongodb').MongoClient;
+  var url = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
+
+  await MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db("cloudcomputingcluster");
+    dbo.collection("users").find(({name :'Kris'})).toArray(function(err, result) {
+      if (err) throw err;
+      console.log(result);
+      db.close();
+    });
+  });
+}
 
 const app = require('express')();
 const http = require('http').Server(app);
@@ -47,7 +84,9 @@ io.on('connection', (socket) => {
 
   socket.on('join', name => {
     onlineMap.set(socket.id, name);
-    //run(name).catch(console.dir);
+    getall();
+    getbyname();
+    run(name).catch(console.dir);
     io.emit('hello', name + " has joined the chat");
     io.emit('join', Array.from(onlineMap));
   });
