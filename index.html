@@ -60,10 +60,14 @@
         window.scrollTo(0, document.body.scrollHeight);
       });
 
-      socket.on('join', function(name) {
-        var item = document.createElement('li');
-        item.textContent = name;
-        user.appendChild(item);
+      socket.on('join', function(online) {
+        let userMap = new Map(online)
+        user.innerHTML = " ";
+        for (let person of userMap.values()){
+          var item = document.createElement('li');
+          item.textContent = person.toString();
+          user.appendChild(item);
+        }
       });
 
       sendData.addEventListener("click", function (e) {
