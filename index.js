@@ -1,26 +1,21 @@
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-client.connect(err => {
+/*client.connect(err => {
   const collection = client.db("cloudcomputingcluster").collection("users");
-  console.log("Connected correctly to server1");
   collection.insertOne({
     name: "Test"
   });
-  console.log("Connected correctly to server2");
-
+*/
   // perform actions on the collection object
-  client.close();
-  console.log("Connected correctly to server3");
-});
-/*async function run() {
+
+async function run(name) {
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
   try {
     await client.connect();
     console.log("Connected correctly to server");
     const db = client.db('cloudcomputingcluster')
     await db.collection('users').insertOne({
-          name: 'Ludwig',
-          alter: 21
+          name: name
         }
     )
   } catch (err) {
@@ -30,8 +25,8 @@ client.connect(err => {
     await client.close();
   }
 }
-run().catch(console.dir);
-*/
+
+
 
 const app = require('express')();
 const http = require('http').Server(app);
@@ -52,6 +47,7 @@ io.on('connection', (socket) => {
 
   socket.on('join', msg => {
     socket.name = msg
+    run(socket.name.toString()).catch(console.dir);
     io.emit('hello', socket.name + " has joined the chat");
 
     //has do be reworked!
@@ -67,3 +63,6 @@ io.on('connection', (socket) => {
 http.listen(port, () => {
   console.log(`Socket.IO server running at http://localhost:${port}/`);
 });
+
+//  client.close();
+//});
