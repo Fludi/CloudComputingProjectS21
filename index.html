@@ -78,12 +78,12 @@
       popupbox.addEventListener('submit', function(e) {
         e.preventDefault();
         if (usernameInput.value && passwordInput.value) {
-          socket.emit('leave', {unm: usernameInput.value, pnw: passwordInput.value});
+          socket.emit('details', {unm: usernameInput.value, pnw: passwordInput.value});
         }
       });
 
       //The server sends back if login was successful or not
-      socket.on("leave", function(log) {
+      socket.on("details", function(log) {
         //if login is successful closes the login, allows user to send messages, and sends joining message
         if(log.scs){
           popupbox.style.visibility="hidden";

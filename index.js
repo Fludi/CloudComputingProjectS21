@@ -1,13 +1,6 @@
 const bcrypt = require('bcrypt');
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
-/*client.connect(err => {
-  const collection = client.db("cloudcomputingcluster").collection("users");
-  collection.insertOne({
-    name: "Test"
-  });
-*/
-  // perform actions on the collection object
 
 async function run(name) {
   const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -21,7 +14,6 @@ async function run(name) {
     )
     const randomUser = await db.collection('users').aggregate([ { $sample: { size: 1 } } ]).toArray();
     console.log(randomUser);
-    //await client.close();
     const xUser = await db.collection('users').aggregate([ { $sample: { size: 1 } } ]).toArray();
     console.log(xUser);
     await client.close();
@@ -34,7 +26,6 @@ async function run(name) {
 }
 
 async function getall(){
-  console.log("sad");
   var MongoClient = require('mongodb').MongoClient;
   var url = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
 
@@ -50,7 +41,6 @@ async function getall(){
 }
 
 async function getbyname(){
-  console.log("mit name");
   var MongoClient = require('mongodb').MongoClient;
   var url = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
 
@@ -65,14 +55,13 @@ async function getbyname(){
   });
 }
 
-
-
+/* Unused Hash-function -- does not work
 async function hashIt(password){
   const salt = await bcrypt.genSalt(6);
   const hashed = await bcrypt.hash(password, salt);
   return hashed;
 }
-
+*/
 
 const app = require('express')();
 const http = require('http').Server(app);
@@ -85,61 +74,47 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  // socket.on("hello", (arg) => {
-  //   io.emit('hello', arg);
-  //});
+
   async function login(log){
-    console.log("login funktion startet");
-    //console.log(log.unm);
-    //console.log(log.pnw);
-    var hashed = await hashIt(log.pnw);
-    console.log(hashed);
     var MongoClient = require('mongodb').MongoClient;
     var url = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
     await MongoClient.connect(url, function(err, db) {
       if (err) throw err;
       var dbo = db.db("cloudcomputingcluster");
 
-
-      var wasdas = dbo.collection("benutzerdaten").findOne({name :log.unm}, function(err, result) {
+      dbo.collection("benutzerdaten").findOne({name :log.unm}, function(err, result) {
         if (err) throw err;
-        console.log(result);
-        //console.log(result.password);
-        //console.log(result.name);
-        console.log(log.unm);
-        console.log(log.pnw);
+
+        //if user does not exist yet, create a new entry in the database and continue login
         if (result == null) {
-          console.log("gibt es nicht");
           dbo.collection("benutzerdaten").insertOne({
             name: log.unm,
             password: log.pnw
           });
-          console.log("Benutzer registriert");
-          io.to(socket.id).emit('leave', {scs: true, nme: log.unm});
-        }
-        else if (log.unm == result.name && log.pnw ==result.password){
-          io.to(socket.id).emit('leave', {scs: true, nme: log.unm});
-        }
-        else
-          io.to(socket.id).emit('leave', {scs: false, nme: log.unm});
+          io.to(socket.id).emit('details', {scs: true, nme: log.unm});
 
+        //if user does exist and password is correct continue login
+        } else if (log.unm == result.name && log.pnw == result.password) {
+          io.to(socket.id).emit('details', {scs: true, nme: log.unm});
+
+        //if user does exist but password is wrong dicontinue login
+        } else {
+          io.to(socket.id).emit('details', {scs: false, nme: log.unm});
+        }
+
+        //close database connection
         db.close();
       });
     });
   }
 
-  socket.on("leave", log => {
-    //TODO: Datenbankabgleich (wenn username noch nicht existiert dann füge username und passwort hinzu. Wenn username existiert vergleiche Passwörter)
-    //console.log(log.unm);
-    login(log);
-    //if(//successful) {
+//---------------------------------------------------------------------------------------------------------------------
 
-    //}
-    //else if(//no success) {
-    //  io.to(socket.id).emit('leave', {scs: false, nme: log.nme});
-    //}
+  socket.on("details", log => {
+    login(log);
   });
 
+  //if server gets message, he then distributs it to a)all sockets b)to only one socket c)a groub of sockets
   socket.on('chat message', msg => {
     var sendCount = 0;
     let recipMap = new Map(msg.recip);
@@ -151,6 +126,7 @@ io.on('connection', (socket) => {
       sendCount++;
     }
 
+    //sends to all users
     if (sendCount == 0) {
       io.emit('chat message', msg.msg);
     }
@@ -170,11 +146,9 @@ io.on('connection', (socket) => {
     }
   });
 
+  //creates a message for every new user and updates the list of online users
   socket.on('join', name => {
     onlineMap.set(socket.id, name);
-    // getall();
-    // getbyname();
-    // run(name).catch(console.dir);
     io.emit('hello', name + " has joined the chat");
     io.emit('join', Array.from(onlineMap));
   });
