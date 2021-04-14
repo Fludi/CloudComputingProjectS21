@@ -12,6 +12,7 @@ async function run(name) {
           name: name
         }
     )
+    // gets a random entry from the database
     const randomUser = await db.collection('users').aggregate([ { $sample: { size: 1 } } ]).toArray();
     console.log(randomUser);
     const xUser = await db.collection('users').aggregate([ { $sample: { size: 1 } } ]).toArray();
@@ -25,6 +26,7 @@ async function run(name) {
   }
 }
 
+//gets all data entries from the database
 async function getall(){
   var MongoClient = require('mongodb').MongoClient;
   var url = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
@@ -40,6 +42,7 @@ async function getall(){
   });
 }
 
+//gets all data entries from the database with a specific name
 async function getbyname(){
   var MongoClient = require('mongodb').MongoClient;
   var url = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
@@ -75,13 +78,16 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
 
+  //login function
   async function login(log){
+    // database connection
     var MongoClient = require('mongodb').MongoClient;
     var url = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
     await MongoClient.connect(url, function(err, db) {
       if (err) throw err;
+      //defines database
       var dbo = db.db("cloudcomputingcluster");
-
+      // search for a database entry with name = loginname
       dbo.collection("benutzerdaten").findOne({name :log.unm}, function(err, result) {
         if (err) throw err;
 
