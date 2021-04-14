@@ -54,6 +54,8 @@
       var sendMsg = document.getElementById('sendMsg');
       var input = document.getElementById('input');
       var sendData = document.getElementById('sendData')
+      let userMap;
+      let subUserMap;
 
 
       //socket.emit('hello', name);
@@ -72,7 +74,7 @@
       });
 
       socket.on('join', function(online) {
-        let userMap = new Map(online)
+        userMap = new Map(online)
         user.innerHTML = " ";
         for (let person of userMap.values()){
           var itemCheck = document.createElement('input');
@@ -104,9 +106,18 @@
 
       sendMsg.addEventListener('click', function(e) {
         e.preventDefault();
+        subUserMap = new Map();
+        var sendCount = 0;
+        for (let [id, person] of userMap){
+          var nameCheck = document.getElementById(person.toString());
+          if (nameCheck.checked){
+            subUserMap.set(id, person);
+            sendCount ++;
+          }
+        }
         if (input.value) {
           var timestamp = new Date();
-          socket.emit('chat message', timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ': <' + input.value + '>');
+          socket.emit('chat message', {msg: timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ': <' + input.value + '>', recip: Array.from(subUserMap)});
           input.value = '';
         }
       });

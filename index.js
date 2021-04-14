@@ -79,14 +79,38 @@ io.on('connection', (socket) => {
  //   io.emit('hello', arg);
  // });
   socket.on('chat message', msg => {
-    io.emit('chat message', msg);
+    var sendCount = 0;
+    let recipMap = new Map(msg.recip);
+    let recipId;
+    let recipArr = [];
+    for (recipId of recipMap.keys()){
+      io.sockets.sockets.get(recipId).join("multiCast");
+      recipArr.push(onlineMap.get(recipId));
+      sendCount ++;
+    }
+
+    if(sendCount == 0){
+      io.emit('chat message', msg.msg);
+    }
+
+    else if(sendCount == 1){
+      io.to(recipId).emit('chat message', "->privat " + msg.msg);
+    }
+
+    else if(sendCount > 1){
+      io.in("multiCast").emit('chat message',"->send to: " + recipArr + " " + msg.msg);
+    }
+
+    for (recipId of recipMap.keys()) {
+      io.sockets.sockets.get(recipId).leave("multiCast");
+    }
   });
 
   socket.on('join', name => {
     onlineMap.set(socket.id, name);
-    getall();
-    getbyname();
-    run(name).catch(console.dir);
+   // getall();
+   // getbyname();
+   // run(name).catch(console.dir);
     io.emit('hello', name + " has joined the chat");
     io.emit('join', Array.from(onlineMap));
   });
