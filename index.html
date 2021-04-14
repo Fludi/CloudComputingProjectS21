@@ -43,10 +43,10 @@
       <button id="sendMsg">Send Msg</button>
       <button id="sendData">Send Data</button>
 
-      <div id="myDIV" style="display: none">
-      <form id="formUp"  >
-        <input type="file" id="f"  />
-        <button type="submit">Upload File and Send</button>
+      <div id="multimedia" style="display: none">
+      <form id="formUp">
+        <input type="file" id="file"/>
+        <button type="submit">Upload and Send</button>
         <!-- for upload progress -->
         <div id="upload-progress"></div>
       </form>
@@ -137,7 +137,7 @@
       //Not finished yet
       sendData.addEventListener("click", function (e) {
         e.preventDefault();
-        var x = document.getElementById("myDIV");
+        var x = document.getElementById("multimedia");
         if (x.style.display === "none") {
           x.style.display = "block";
         } else {

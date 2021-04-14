@@ -183,14 +183,15 @@ io.on('connection', (socket) => {
     io.emit('join', Array.from(onlineMap));
   });
 
-  /*
+  //if a socket dissconnects everybody gets a message and list of online users get updated
   socket.on('disconnect', () => {
-    io.emit('hello', onlineMap.get(socket.id) + " has left the chat");
-    onlineMap.delete(socket.id);
-  //  io.emit('leave', socket.name);
-    io.emit('join', Array.from(onlineMap));
+    if(onlineMap.has(socket.id)) {
+      io.emit('hello', onlineMap.get(socket.id) + " has left the chat");
+      onlineMap.delete(socket.id);
+      io.emit('join', Array.from(onlineMap));
+    }
   });
-  */
+
 });
 
   http.listen(port, () => {
