@@ -32,7 +32,18 @@
       <input id="input" autocomplete="off" />
       <button id="sendMsg">Send Msg</button>
       <button id="sendData">Send Data</button>
+
+      <div id="myDIV" style="display: none">
+      <form id="formUp"  >
+        <input type="file" id="f"  />
+        <button type="submit">Upload File and Send</button>
+        <!-- for upload progress -->
+        <div id="upload-progress"></div>
+      </form>
+      </div>
+
     </form>
+
 
     <script src="/socket.io/socket.io.js"></script>
 
@@ -81,7 +92,15 @@
 
       sendData.addEventListener("click", function (e) {
         e.preventDefault();
+        var x = document.getElementById("myDIV");
+        if (x.style.display === "none") {
+          x.style.display = "block";
+        } else {
+          x.style.display = "none";
+        }
       });
+
+
 
       sendMsg.addEventListener('click', function(e) {
         e.preventDefault();
