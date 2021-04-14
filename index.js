@@ -75,30 +75,43 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
- // socket.on("hello", (arg) => {
- //   io.emit('hello', arg);
- // });
+  // socket.on("hello", (arg) => {
+  //   io.emit('hello', arg);
+  //});
+
+  socket.on("leave", log => {
+    //TODO: Datenbankabgleich (wenn username noch nicht existiert dann füge username und passwort hinzu. Wenn username existiert vergleiche Passwörter)
+    if(//successful) {
+      io.to(socket.id).emit('leave', {scs: true, nme: log.unm});
+    }
+    else if(//no success) {
+      io.to(socket.id).emit('details', {scs: false, nme: log.nme});
+    }
+  });
+
   socket.on('chat message', msg => {
     var sendCount = 0;
     let recipMap = new Map(msg.recip);
     let recipId;
     let recipArr = [];
-    for (recipId of recipMap.keys()){
+    for (recipId of recipMap.keys()) {
       io.sockets.sockets.get(recipId).join("multiCast");
       recipArr.push(onlineMap.get(recipId));
-      sendCount ++;
+      sendCount++;
     }
 
-    if(sendCount == 0){
+    if (sendCount == 0) {
       io.emit('chat message', msg.msg);
     }
 
-    else if(sendCount == 1){
+    //sends a private message
+    else if (sendCount == 1) {
       io.to(recipId).emit('chat message', "->privat " + msg.msg);
     }
 
-    else if(sendCount > 1){
-      io.in("multiCast").emit('chat message',"->send to: " + recipArr + " " + msg.msg);
+    //sends a message to multiple participants
+    else if (sendCount > 1) {
+      io.in("multiCast").emit('chat message', "->send to: " + recipArr + " " + msg.msg);
     }
 
     for (recipId of recipMap.keys()) {
@@ -108,21 +121,23 @@ io.on('connection', (socket) => {
 
   socket.on('join', name => {
     onlineMap.set(socket.id, name);
-   // getall();
-   // getbyname();
-   // run(name).catch(console.dir);
+    // getall();
+    // getbyname();
+    // run(name).catch(console.dir);
     io.emit('hello', name + " has joined the chat");
     io.emit('join', Array.from(onlineMap));
   });
 
+  /*
   socket.on('disconnect', () => {
     io.emit('hello', onlineMap.get(socket.id) + " has left the chat");
     onlineMap.delete(socket.id);
   //  io.emit('leave', socket.name);
     io.emit('join', Array.from(onlineMap));
   });
+  */
 });
 
-http.listen(port, () => {
-  console.log(`Socket.IO server running at http://localhost:${port}/`);
-});
+  http.listen(port, () => {
+    console.log(`Socket.IO server running at http://localhost:${port}/`);
+  });
