@@ -65,49 +65,7 @@ async function getbyname(){
   });
 }
 
-async function login(log){
-  console.log("login funktion startet");
-  //console.log(log.unm);
-  //console.log(log.pnw);
-  var hashed = await hashIt(log.pnw);
-  console.log(hashed);
-  var MongoClient = require('mongodb').MongoClient;
-  var url = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
-  await MongoClient.connect(url, function(err, db) {
-    if (err) throw err;
-    var dbo = db.db("cloudcomputingcluster");
 
-
-    var wasdas = dbo.collection("benutzerdaten").findOne({name :log.unm}, function(err, result) {
-      if (err) throw err;
-      console.log(result);
-      //console.log(result.password);
-      //console.log(result.name);
-      console.log(log.unm);
-      console.log(log.pnw);
-      if (result == null) {
-        console.log("gibt es nicht");
-        dbo.collection("benutzerdaten").insertOne({
-          name: log.unm,
-          password: log.pnw
-        });
-        console.log("Benutzer registriert");
-        //return true;
-      }
-      else if (log.unm == result.name && log.pnw ==result.password){
-        //return true;
-        var x = true;
-        console.log(x);
-      }
-      else
-        //return false;
-        var x = false;
-      console.log(x);
-
-      db.close();
-    });
-  });
-}
 
 async function hashIt(password){
   const salt = await bcrypt.genSalt(6);
@@ -130,14 +88,52 @@ io.on('connection', (socket) => {
   // socket.on("hello", (arg) => {
   //   io.emit('hello', arg);
   //});
+  async function login(log){
+    console.log("login funktion startet");
+    //console.log(log.unm);
+    //console.log(log.pnw);
+    var hashed = await hashIt(log.pnw);
+    console.log(hashed);
+    var MongoClient = require('mongodb').MongoClient;
+    var url = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
+    await MongoClient.connect(url, function(err, db) {
+      if (err) throw err;
+      var dbo = db.db("cloudcomputingcluster");
+
+
+      var wasdas = dbo.collection("benutzerdaten").findOne({name :log.unm}, function(err, result) {
+        if (err) throw err;
+        console.log(result);
+        //console.log(result.password);
+        //console.log(result.name);
+        console.log(log.unm);
+        console.log(log.pnw);
+        if (result == null) {
+          console.log("gibt es nicht");
+          dbo.collection("benutzerdaten").insertOne({
+            name: log.unm,
+            password: log.pnw
+          });
+          console.log("Benutzer registriert");
+          io.to(socket.id).emit('leave', {scs: true, nme: log.unm});
+        }
+        else if (log.unm == result.name && log.pnw ==result.password){
+          io.to(socket.id).emit('leave', {scs: true, nme: log.unm});
+        }
+        else
+          io.to(socket.id).emit('leave', {scs: false, nme: log.unm});
+
+        db.close();
+      });
+    });
+  }
 
   socket.on("leave", log => {
     //TODO: Datenbankabgleich (wenn username noch nicht existiert dann füge username und passwort hinzu. Wenn username existiert vergleiche Passwörter)
     //console.log(log.unm);
-    var ruckgabe = login(log);
-    console.log(ruckgabe);
+    login(log);
     //if(//successful) {
-      io.to(socket.id).emit('leave', {scs: true, nme: log.unm});
+
     //}
     //else if(//no success) {
     //  io.to(socket.id).emit('leave', {scs: false, nme: log.nme});
