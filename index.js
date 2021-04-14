@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
 /*client.connect(err => {
@@ -64,6 +65,33 @@ async function getbyname(){
   });
 }
 
+async function login(log){
+  console.log("mit name");
+  console.log(log.unm);
+  console.log(log.pnw);
+  var hashed = await hashIt(log.pnw);
+  console.log(hashed);
+  var MongoClient = require('mongodb').MongoClient;
+  var url = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
+
+  await MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db("cloudcomputingcluster");
+    dbo.collection("users").find(({name :'Kris'})).toArray(function(err, result) {
+      if (err) throw err;
+      console.log(result);
+      db.close();
+    });
+  });
+}
+
+async function hashIt(password){
+  const salt = await bcrypt.genSalt(6);
+  const hashed = await bcrypt.hash(password, salt);
+  return hashed;
+}
+
+
 const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
@@ -81,6 +109,8 @@ io.on('connection', (socket) => {
 
   socket.on("leave", log => {
     //TODO: Datenbankabgleich (wenn username noch nicht existiert dann füge username und passwort hinzu. Wenn username existiert vergleiche Passwörter)
+    console.log(log.unm);
+    login(log);
     //if(//successful) {
       io.to(socket.id).emit('leave', {scs: true, nme: log.unm});
     //}
