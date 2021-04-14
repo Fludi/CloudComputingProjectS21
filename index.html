@@ -37,8 +37,6 @@
         <div style="text-align: center;"><input id="passwordInput" autocomplete="off" size="14" /></div>
         <div style="text-align: center;"><input type="submit" name="submit" value="login" /></div>
       </form>
-      <br />
-      <div style="text-align: center;"><a href="javascript:login('hide');">close</a></div>
     </div>
     <ul id="messages"></ul>
 
@@ -98,7 +96,7 @@
         }
         //if login is not successful user gets a message
         else{
-          prompt("Username is already taken, choose something else.")
+          alert("Username is already taken, choose something else.")
         }
       });
 

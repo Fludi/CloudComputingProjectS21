@@ -81,12 +81,12 @@ io.on('connection', (socket) => {
 
   socket.on("leave", log => {
     //TODO: Datenbankabgleich (wenn username noch nicht existiert dann füge username und passwort hinzu. Wenn username existiert vergleiche Passwörter)
-    if(//successful) {
+    //if(//successful) {
       io.to(socket.id).emit('leave', {scs: true, nme: log.unm});
-    }
-    else if(//no success) {
-      io.to(socket.id).emit('details', {scs: false, nme: log.nme});
-    }
+    //}
+    //else if(//no success) {
+    //  io.to(socket.id).emit('leave', {scs: false, nme: log.nme});
+    //}
   });
 
   socket.on('chat message', msg => {
