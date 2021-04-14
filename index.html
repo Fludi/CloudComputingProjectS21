@@ -1,27 +1,25 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
+    <title>Simple Cloud</title>
+
     <style>
       body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-
       #form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 190px; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
       #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
       #input:focus { outline: none; }
       #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #77ff7f; }
       #submit { background: #333; border: none; padding: 8px; margin: 0.25rem; border-radius: 3px; outline: none; color: #77ff7f; }
-
       #messages { list-style-type: none; margin-left: 200px; margin-top: 0; padding: 0;}
       #messages > li { padding: 0.5rem 1rem; }
       #messages > li:nth-child(odd) { background: #efefef; }
-
       #users-block { width:190px; height: 100vh; float:left; background: #f5f5dc; word-wrap: break-word; position: fixed; overflow: scroll;}
-
       #popupbox{ margin: 0; margin-left: 40%; margin-right: 40%; margin-top: 150px; padding-top: 10px; width: 20%; height: 150px; position: absolute;background: #FBFBF0; border: solid #D3D3D3 8px;}
-
     </style>
+
   </head>
   <body>
+
     <div id="users-block">
       <form id="user" style="margin-right:15px; padding: 18px" action=""></form>
     </div>
@@ -35,8 +33,8 @@
         <div style="text-align: center;"><input type="submit" id="submit" value="login" /></div>
       </form>
     </div>
-    <ul id="messages"></ul>
 
+    <ul id="messages"></ul>
 
     <form id="form" action="">
       <input id="input" autocomplete="off" />
@@ -44,14 +42,13 @@
       <button id="sendData">Send Data</button>
 
       <div id="multimedia" style="display: none">
-      <form id="formUp">
+      <form id="formExtend">
         <input type="file" id="file"/>
         <button type="submit">Upload and Send</button>
         <!-- for upload progress -->
         <div id="upload-progress"></div>
       </form>
       </div>
-
     </form>
 
 
@@ -97,14 +94,6 @@
         }
       });
 
-
-
-      //socket.emit('hello', name);
-       // socket.on("connect", () => {
-
-       //         }
-       // );
-
       //server sends a message for each user who joined or left the chat
       socket.on('hello', function(msg) {
         var item = document.createElement('li');
@@ -134,19 +123,19 @@
         }
       });
 
-      //Not finished yet
+      //extends the form, makes buttons for file upload visible -- unfinished
       sendData.addEventListener("click", function (e) {
         e.preventDefault();
-        var x = document.getElementById("multimedia");
-        if (x.style.display === "none") {
-          x.style.display = "block";
+        var extension = document.getElementById("multimedia");
+        if (extension.style.display === "none" && canChat) {
+          extension.style.display = "block";
         } else {
-          x.style.display = "none";
+          extension.style.display = "none";
         }
       });
 
 
-      //When User sends a message, checks to whom
+      //When User sends a message, checks to whom, then sends the message and a Map with all checked users
       sendMsg.addEventListener('click', function(e) {
         e.preventDefault();
         subUserMap = new Map();
@@ -166,14 +155,6 @@
         }
       });
 
-      /*
-      socket.on('leave', function(name) {
-        var item = document.createElement('li');
-        item.textContent = name;
-        user.appendChild(item);
-      });
-      */
-
       //displays chat messages from server
       socket.on('chat message', function(msg) {
         var item = document.createElement('li');
@@ -181,6 +162,7 @@
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
       });
+
     </script>
   </body>
 </html>
