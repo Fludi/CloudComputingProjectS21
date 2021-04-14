@@ -9,6 +9,7 @@
       #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
       #input:focus { outline: none; }
       #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #77ff7f; }
+      #submit { background: #333; border: none; padding: 8px; margin: 0.25rem; border-radius: 3px; outline: none; color: #77ff7f; }
 
       #messages { list-style-type: none; margin-left: 200px; margin-top: 0; padding: 0;}
       #messages > li { padding: 0.5rem 1rem; }
@@ -16,11 +17,7 @@
 
       #users-block { width:190px; height: 100vh; float:left; background: #f5f5dc; word-wrap: break-word; position: fixed; overflow: scroll;}
 
-      #popupbox{
-        margin: 0; margin-left: 40%; margin-right: 40%; margin-top: 150px; padding-top: 10px;
-        width: 20%; height: 150px; position: absolute;background: #FBFBF0; border: solid #000000 2px;
-        font-family: arial; visibility: visible;
-      }
+      #popupbox{ margin: 0; margin-left: 40%; margin-right: 40%; margin-top: 150px; padding-top: 10px; width: 20%; height: 150px; position: absolute;background: #FBFBF0; border: solid #D3D3D3 8px;}
 
     </style>
   </head>
@@ -35,7 +32,7 @@
         <div style="text-align: center;"><input id="usernameInput" autocomplete="off" size="14" /></div>
         <div style="text-align: center;">Password:</div>
         <div style="text-align: center;"><input id="passwordInput" autocomplete="off" size="14" /></div>
-        <div style="text-align: center;"><input type="submit" name="submit" value="login" /></div>
+        <div style="text-align: center;"><input type="submit" id="submit" value="login" /></div>
       </form>
     </div>
     <ul id="messages"></ul>
