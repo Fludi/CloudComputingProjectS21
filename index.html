@@ -42,12 +42,10 @@
       <button id="sendData">Send Data</button>
 
       <div id="multimedia" style="display: none">
-      <form id="formExtend">
-        <input type="file" id="file"/>
-        <button type="submit">Upload and Send</button>
-        <!-- for upload progress -->
-        <div id="upload-progress"></div>
-      </form>
+      <div id="formExtend">
+        <input type="file" id="fileUpload"/>
+        <button id = "sfile">Upload and Send</button>
+      </div>
       </div>
     </form>
 
@@ -64,11 +62,12 @@
       let popupbox = document.getElementById("popupbox");
       let usernameInput = document.getElementById("usernameInput");
       let passwordInput = document.getElementById("passwordInput");
+      let fileInput = document.getElementById("fileUpload");
+      let sendFile = document.getElementById("sfile");
 
       let userMap;
       let subUserMap;
       let username;
-      let password;
       let canChat = false;
 
       //When user logs in, username and password is send to server
@@ -123,7 +122,7 @@
         }
       });
 
-      //extends the form, makes buttons for file upload visible -- unfinished
+      //extends the form, makes buttons for file upload visible
       sendData.addEventListener("click", function (e) {
         e.preventDefault();
         var extension = document.getElementById("multimedia");
@@ -134,6 +133,30 @@
         }
       });
 
+      sendFile.addEventListener('click', function(e) {
+        e.preventDefault();
+          var img = document.createElement('img');
+          img.height = "300";
+          var file = fileInput.files[0];
+          var reader = new FileReader();
+
+          reader.onloadend = function () {
+            img.src = reader.result;
+          }
+          if (file) {
+            reader.readAsDataURL(file);
+          } else {
+            img.src = "";
+          }
+        messages.appendChild(img);
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+
+      //Eventlistner for klicking the send Button
+        //if(document.getElementById("uploadBox").value != "") {
+          //Build a Message with that file
+          //send that message
+      //}
 
       //When User sends a message, checks to whom, then sends the message and a Map with all checked users
       sendMsg.addEventListener('click', function(e) {
