@@ -133,21 +133,34 @@
         }
       });
 
+
       sendFile.addEventListener('click', function(e) {
         e.preventDefault();
-          var img = document.createElement('img');
-          img.height = "300";
           var file = fileInput.files[0];
           var reader = new FileReader();
-
-          reader.onloadend = function () {
-            img.src = reader.result;
+          reader.onload = function () {
+            //img.src = reader.result;
+            socket.emit("leave", reader.result);
           }
           if (file) {
             reader.readAsDataURL(file);
-          } else {
-            img.src = "";
           }
+      });
+
+      socket.on("leave", function(msg) {
+        var img = document.createElement('img');
+        img.height = "300";
+        //var file = msg;
+        //var reader = new FileReader();
+        //reader.onloadend = function () {
+          img.src = msg;
+          //socket.emit("base64 file", reader.result);
+        //}
+        //if (file) {
+          //reader.readAsDataURL(file);
+        //} else {
+          //img.src = "";
+        //}
         messages.appendChild(img);
         window.scrollTo(0, document.body.scrollHeight);
       });

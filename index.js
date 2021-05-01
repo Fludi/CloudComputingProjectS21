@@ -158,7 +158,10 @@ io.on('connection', (socket) => {
     io.emit('hello', name + " has joined the chat");
     io.emit('join', Array.from(onlineMap));
   });
-
+  socket.on('leave', file => {
+    console.log("Hey immerhin");
+    io.emit('leave', file);
+  });
   //if a socket dissconnects everybody gets a message and list of online users get updated
   socket.on('disconnect', () => {
     if(onlineMap.has(socket.id)) {
