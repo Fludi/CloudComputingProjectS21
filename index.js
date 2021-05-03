@@ -158,10 +158,40 @@ io.on('connection', (socket) => {
     io.emit('hello', name + " has joined the chat");
     io.emit('join', Array.from(onlineMap));
   });
+
+  //creates a multimedia message
   socket.on('leave', file => {
-    console.log("Hey immerhin");
-    io.emit('leave', file);
+    var sendCount = 0;
+    let recipMap = new Map(file.recip);
+    let recipId;
+    let recipArr = [];
+    for (recipId of recipMap.keys()) {
+      io.sockets.sockets.get(recipId).join("multiCast");
+      recipArr.push(onlineMap.get(recipId));
+      sendCount++;
+    }
+
+    //sends to all users
+    if (sendCount == 0) {
+      io.emit('leave', file);
+    }
+
+    //sends a private message
+    else if (sendCount == 1) {
+      io.to(recipId).emit('leave', {msg: "->privat " + file.msg, data: file.data});
+    }
+
+    //sends a message to multiple participants
+    else if (sendCount > 1) {
+      io.in("multiCast").emit('leave', {msg: "->send to: " + recipArr + " " + file.msg, data: file.data});
+    }
+
+    for (recipId of recipMap.keys()) {
+      io.sockets.sockets.get(recipId).leave("multiCast");
+    }
   });
+
+
   //if a socket dissconnects everybody gets a message and list of online users get updated
   socket.on('disconnect', () => {
     if(onlineMap.has(socket.id)) {

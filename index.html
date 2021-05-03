@@ -133,43 +133,42 @@
         }
       });
 
-
+      //When User sends a file
       sendFile.addEventListener('click', function(e) {
         e.preventDefault();
-          var file = fileInput.files[0];
-          var reader = new FileReader();
-          reader.onload = function () {
-            //img.src = reader.result;
-            socket.emit("leave", reader.result);
+        subUserMap = new Map();
+        var sendCount = 0;
+        for (let [id, person] of userMap){
+          var nameCheck = document.getElementById(person.toString());
+          if (nameCheck.checked){
+            subUserMap.set(id, person);
+            sendCount ++;
           }
-          if (file) {
-            reader.readAsDataURL(file);
-          }
+        }
+        var timestamp = new Date();
+        var file = fileInput.files[0];
+        var reader = new FileReader();
+        reader.onload = function () {
+          socket.emit("leave", {msg: timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ':', data: reader.result, recip: Array.from(subUserMap)});
+        }
+        if (file) {
+          reader.readAsDataURL(file);
+        }
       });
 
-      socket.on("leave", function(msg) {
+      //Handling when user gets a Multimediafile
+      socket.on("leave", function(file) {
+        var item = document.createElement('li');
+        item.textContent = file.msg;
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+
         var img = document.createElement('img');
         img.height = "300";
-        //var file = msg;
-        //var reader = new FileReader();
-        //reader.onloadend = function () {
-          img.src = msg;
-          //socket.emit("base64 file", reader.result);
-        //}
-        //if (file) {
-          //reader.readAsDataURL(file);
-        //} else {
-          //img.src = "";
-        //}
+        img.src = file.data;
         messages.appendChild(img);
         window.scrollTo(0, document.body.scrollHeight);
       });
-
-      //Eventlistner for klicking the send Button
-        //if(document.getElementById("uploadBox").value != "") {
-          //Build a Message with that file
-          //send that message
-      //}
 
       //When User sends a message, checks to whom, then sends the message and a Map with all checked users
       sendMsg.addEventListener('click', function(e) {
@@ -183,6 +182,7 @@
             sendCount ++;
           }
         }
+
         //sends the message, but only if user has logged in successful
         if (input.value && canChat) {
           var timestamp = new Date();
