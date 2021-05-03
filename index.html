@@ -133,30 +133,33 @@
         }
       });
 
-      //When User sends a file
+      //When user is sending a file, check first if size is bigger than 3 Megabytes
       sendFile.addEventListener('click', function(e) {
         e.preventDefault();
-        subUserMap = new Map();
-        var sendCount = 0;
-        for (let [id, person] of userMap){
-          var nameCheck = document.getElementById(person.toString());
-          if (nameCheck.checked){
-            subUserMap.set(id, person);
-            sendCount ++;
-          }
-        }
-        var timestamp = new Date();
         var file = fileInput.files[0];
-        var reader = new FileReader();
-        reader.onload = function () {
-          socket.emit("leave", {msg: timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ':', data: reader.result, recip: Array.from(subUserMap)});
+        if(file.size > 3000000){
+          alert("File size to big! Please choose something with less than 3Mb.")
         }
-        if (file) {
-          reader.readAsDataURL(file);
+        else{
+          subUserMap = new Map();
+          for (let [id, person] of userMap){
+            var nameCheck = document.getElementById(person.toString());
+            if (nameCheck.checked){
+              subUserMap.set(id, person);
+            }
+          }
+          var timestamp = new Date();
+          var reader = new FileReader();
+          reader.onload = function () {
+            socket.emit("leave", {msg: timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ':', data: reader.result, recip: Array.from(subUserMap)});
+          }
+          if (file) {
+            reader.readAsDataURL(file);
+          }
         }
       });
 
-      //Handling when user gets a Multimediafile
+      //Handling when user gets a multimedia file
       socket.on("leave", function(file) {
         var item = document.createElement('li');
         item.textContent = file.msg;
@@ -174,12 +177,10 @@
       sendMsg.addEventListener('click', function(e) {
         e.preventDefault();
         subUserMap = new Map();
-        var sendCount = 0;
         for (let [id, person] of userMap){
           var nameCheck = document.getElementById(person.toString());
           if (nameCheck.checked){
             subUserMap.set(id, person);
-            sendCount ++;
           }
         }
 
