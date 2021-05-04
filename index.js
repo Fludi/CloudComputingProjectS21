@@ -178,12 +178,12 @@ io.on('connection', (socket) => {
 
     //sends a private message
     else if (sendCount == 1) {
-      io.to(recipId).emit('leave', {msg: "->privat " + file.msg, data: file.data});
+      io.to(recipId).emit('leave', {type: file.type, msg: "->privat " + file.msg, data: file.data});
     }
 
     //sends a message to multiple participants
     else if (sendCount > 1) {
-      io.in("multiCast").emit('leave', {msg: "->send to: " + recipArr + " " + file.msg, data: file.data});
+      io.in("multiCast").emit('leave', {type: file.type, msg: "->send to: " + recipArr + " " + file.msg, data: file.data});
     }
 
     for (recipId of recipMap.keys()) {
