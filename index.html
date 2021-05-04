@@ -137,7 +137,7 @@
       sendFile.addEventListener('click', function(e) {
         e.preventDefault();
         var file = fileInput.files[0];
-        if(file.size > 3000000){
+        if(file.size < 1){
           alert("File size to big! Please choose something with less than 3Mb.")
         }
         else{
@@ -164,6 +164,14 @@
         var item = document.createElement('li');
         item.textContent = file.msg;
         messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+
+        var vid = document.createElement('video');
+        vid.setAttribute('class', 'video-small');
+        vid.setAttribute('controls', 'controls');
+        vid.height = "300";
+        vid.src = file.data;
+        messages.appendChild(vid);
         window.scrollTo(0, document.body.scrollHeight);
 
         var img = document.createElement('img');
