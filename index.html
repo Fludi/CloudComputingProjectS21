@@ -154,11 +154,14 @@
             if(file.type.match('image.*')){
               socket.emit("leave", {type: "img", msg: timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ':', data: reader.result, recip: Array.from(subUserMap)});
             }
-            if(file.type.match('video.*')){
+            else if(file.type.match('video.*')){
               socket.emit("leave", {type: "vid", msg: timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ':', data: reader.result, recip: Array.from(subUserMap)});
             }
-            if(file.type.match('audio.*')){
+            else if(file.type.match('audio.*')){
               socket.emit("leave", {type: "aud", msg: timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ':', data: reader.result, recip: Array.from(subUserMap)});
+            }
+            else{
+              socket.emit("leave", {type: "other", msg: timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ':', data: reader.result, recip: Array.from(subUserMap)});
             }
           }
           if (file) {
@@ -184,18 +187,28 @@
           window.scrollTo(0, document.body.scrollHeight);
         }
 
-        if(file.type == "img") {
+        else if(file.type == "img") {
           var img = document.createElement('img');
           img.height = "300";
           img.src = file.data;
           messages.appendChild(img);
           window.scrollTo(0, document.body.scrollHeight);
         }
-        if(file.type == "aud") {
+
+        else if(file.type == "aud") {
           var aud = document.createElement('audio');
           aud.setAttribute('controls', 'controls');
           aud.src = file.data;
           messages.appendChild(aud);
+          window.scrollTo(0, document.body.scrollHeight);
+        }
+        else {
+          var down = document.createElement('a');
+          down.setAttribute('download', 'download');
+          down.height = "300";
+          down.href = file.data;
+          down.textContent = "Dowload File";
+          messages.appendChild(down);
           window.scrollTo(0, document.body.scrollHeight);
         }
       });
