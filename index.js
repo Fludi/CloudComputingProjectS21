@@ -120,7 +120,7 @@ io.on('connection', (socket) => {
     login(log);
   });
 
-  //if server gets message, he then distributs it to a)all sockets b)to only one socket c)a groub of sockets
+  //if server gets a normal message, he then distributs it to a)all sockets b)to only one socket c)a groub of sockets
   socket.on('chat message', msg => {
     var sendCount = 0;
     let recipMap = new Map(msg.recip);
@@ -159,7 +159,7 @@ io.on('connection', (socket) => {
     io.emit('join', Array.from(onlineMap));
   });
 
-  //creates a multimedia message
+  //creates and sends a multimedia message
   socket.on('leave', file => {
     var sendCount = 0;
     let recipMap = new Map(file.recip);
