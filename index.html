@@ -133,89 +133,81 @@
         }
       });
 
-      //When user is sending a file, check first if size is bigger than 3 Megabytes
+      //When user is sending a file
       sendFile.addEventListener('click', function(e) {
         e.preventDefault();
         var file = fileInput.files[0];
-        //if(file.size < 1){
-        //  alert("File size to big! Please choose something with less than 3Mb.")
-        //}
-        //else{
-          subUserMap = new Map();
-          for (let [id, person] of userMap){
-            var nameCheck = document.getElementById(person.toString());
-            if (nameCheck.checked){
-              subUserMap.set(id, person);
-            }
-          //}
-          var timestamp = new Date();
-          var reader = new FileReader();
-          reader.onload = function () {
-            if(file.type.match('image.*')){
-              socket.emit("leave", {type: "img", msg: timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ':', data: reader.result, recip: Array.from(subUserMap)});
-            }
-            else if(file.type.match('video.*')){
-              socket.emit("leave", {type: "vid", msg: timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ':', data: reader.result, recip: Array.from(subUserMap)});
-            }
-            else if(file.type.match('audio.*')){
-              socket.emit("leave", {type: "aud", msg: timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ':', data: reader.result, recip: Array.from(subUserMap)});
-            }
-            else{
-              socket.emit("leave", {type: "other", msg: timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ':', data: reader.result, recip: Array.from(subUserMap)});
-            }
+        var timestamp = new Date();
+        var reader = new FileReader();
+
+        //sends the file according to the type of the file
+        reader.onload = function () {
+          if(file.type.match('image.*')){
+            socket.emit("leave", {type: "img", msg: timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ':', data: reader.result, recip: Array.from(getCheckedUsers())});
           }
-          if (file) {
-            reader.readAsDataURL(file);
+          else if(file.type.match('video.*')){
+            socket.emit("leave", {type: "vid", msg: timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ':', data: reader.result, recip: Array.from(getCheckedUsers())});
           }
+          else if(file.type.match('audio.*')){
+            socket.emit("leave", {type: "aud", msg: timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ':', data: reader.result, recip: Array.from(getCheckedUsers())});
+          }
+          else{
+            socket.emit("leave", {type: "other", msg: timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ':', data: reader.result, recip: Array.from(getCheckedUsers())});
+          }
+        }
+        if (file) {
+          reader.readAsDataURL(file);
         }
       });
 
       //Handling when user gets a multimedia file
       socket.on("leave", function(file) {
         var item = document.createElement('li');
+        var media;
         item.textContent = file.msg;
+
+        //if multimedia file is type video creates a video tag
+        if(file.type == "vid"){
+          media = document.createElement('video');
+          media.setAttribute('class', 'video-small');
+          media.setAttribute('controls', 'controls');
+          media.height = "300";
+          media.src = file.data;
+        }
+
+        //if multimedia file is type image creates an img tag
+        else if(file.type == "img") {
+          media = document.createElement('img');
+          media.height = "300";
+          media.src = file.data;
+        }
+
+        //if multimedia file is type audio creates an audio tag
+        else if(file.type == "aud") {
+          media = document.createElement('audio');
+          media.setAttribute('controls', 'controls');
+          media.src = file.data;
+        }
+
+        //if multimedia file is something else creates a link to download the file
+        else {
+          media = document.createElement('a');
+          media.setAttribute('download', 'download');
+          media.href = file.data;
+          media.textContent = "Dowload File";
+          media.style.background = "#f5f5dc"
+          media.style.paddingRight = "10px";
+          media.style.paddingLeft = "10px";
+        }
+
+        media.style.marginLeft = "6px";
+        item.append(media);
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
-
-        if(file.type == "vid"){
-          var vid = document.createElement('video');
-          vid.setAttribute('class', 'video-small');
-          vid.setAttribute('controls', 'controls');
-          vid.height = "300";
-          vid.src = file.data;
-          messages.appendChild(vid);
-          window.scrollTo(0, document.body.scrollHeight);
-        }
-
-        else if(file.type == "img") {
-          var img = document.createElement('img');
-          img.height = "300";
-          img.src = file.data;
-          messages.appendChild(img);
-          window.scrollTo(0, document.body.scrollHeight);
-        }
-
-        else if(file.type == "aud") {
-          var aud = document.createElement('audio');
-          aud.setAttribute('controls', 'controls');
-          aud.src = file.data;
-          messages.appendChild(aud);
-          window.scrollTo(0, document.body.scrollHeight);
-        }
-        else {
-          var down = document.createElement('a');
-          down.setAttribute('download', 'download');
-          down.height = "300";
-          down.href = file.data;
-          down.textContent = "Dowload File";
-          messages.appendChild(down);
-          window.scrollTo(0, document.body.scrollHeight);
-        }
       });
 
-      //When User sends a message, checks to whom, then sends the message and a Map with all checked users
-      sendMsg.addEventListener('click', function(e) {
-        e.preventDefault();
+      //checks to whom, the message will be send and stores this information inside a Map
+      function getCheckedUsers() {
         subUserMap = new Map();
         for (let [id, person] of userMap){
           var nameCheck = document.getElementById(person.toString());
@@ -223,11 +215,15 @@
             subUserMap.set(id, person);
           }
         }
+        return subUserMap;
+      }
 
-        //sends the message, but only if user has logged in successful
+      //sends the message and Map of selected recipients, but only if user has logged in successful
+      sendMsg.addEventListener('click', function(e) {
+        e.preventDefault();
         if (input.value && canChat) {
           var timestamp = new Date();
-          socket.emit('chat message', {msg: timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ': <' + input.value + '>', recip: Array.from(subUserMap)});
+          socket.emit('chat message', {msg: timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ': <' + input.value + '>', recip: Array.from(getCheckedUsers())});
           input.value = '';
         }
       });
