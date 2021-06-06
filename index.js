@@ -91,21 +91,31 @@ io.on('connection', (socket) => {
       dbo.collection("benutzerdaten").findOne({name :log.unm}, function(err, result) {
         if (err) throw err;
 
-        //if user does not exist yet, create a new entry in the database and continue login
-        if (result == null) {
-          dbo.collection("benutzerdaten").insertOne({
-            name: log.unm,
-            password: log.pnw
-          });
-          io.to(socket.id).emit('details', {scs: true, nme: log.unm});
-
         //if user does exist and password is correct continue login
-        } else if (log.unm == result.name && log.pnw == result.password) {
-          io.to(socket.id).emit('details', {scs: true, nme: log.unm});
+        if (result != null && !log.new) {
+          if (log.unm == result.name && log.pnw == result.password) {
+          io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
+          }
 
-        //if user does exist but password is wrong dicontinue login
+          else {
+          io.to(socket.id).emit('details', {scs: false, nme: log.unm, msg: "Login failed: Incorrect password"});
+          }
+
+        } else if (result != null && log.new) {
+          io.to(socket.id).emit('details', {scs: false, nme: log.unm, msg: "Registration failed: Username already taken"});
+
         } else {
-          io.to(socket.id).emit('details', {scs: false, nme: log.unm});
+          if (!log.new) {
+            io.to(socket.id).emit('details', {scs: false, nme: log.unm, msg: "Login failed: Username does not exist"});
+
+            //if user does not exist yet, create a new entry in the database continue registration
+          } else {
+            dbo.collection("benutzerdaten").insertOne({
+              name: log.unm,
+              password: log.pnw
+            });
+            io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
+          }
         }
 
         //close database connection

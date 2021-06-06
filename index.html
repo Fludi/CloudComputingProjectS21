@@ -9,14 +9,21 @@
       #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
       #input:focus { outline: none; }
       #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #77ff7f; }
-      #submit { background: #333; border: none; padding: 8px; margin: 0.25rem; border-radius: 3px; outline: none; color: #77ff7f; }
+      #submit { font-size: 14px; background: #333; border: none; padding: 8px; margin: 0.5rem; border-radius: 3px; outline: none; color: #77ff7f; }
+      #newSubmit { font-size: 14px; background: #333; border: none; padding: 8px; margin: 0.5rem; border-radius: 3px; outline: none; color: #77ff7f; }
+      #changeForm { margin-top: 5px; border: none; background-color: inherit; color: dodgerblue; text-decoration: underline; font-size: 15px}
+      #changeFormAgain { margin-top: 5px; border: none; background-color: inherit; color: dodgerblue; text-decoration: underline; font-size: 15px}
       #messages { list-style-type: none; margin-left: 200px; margin-top: 0; padding: 0; visibility: hidden}
       #messages > li { padding: 0.5rem 1rem; }
       #messages > li:nth-child(odd) { background: #efefef; }
       #users-block { width:190px; height: 100vh; float:left; background: #f5f5dc; word-wrap: break-word; position: fixed; overflow: scroll;}
       #popupbox{
         margin: 150px 40% 0;
-        padding-top: 10px; width: 20%; height: 150px; position: absolute;background: #FBFBF0; border: solid #D3D3D3 8px;}
+        padding-top: 10px; padding-bottom: 22px; width: 20%; height: 150px; position: absolute;background: #FBFBF0; border: solid #D3D3D3 8px;}
+      #newPopupbox{
+        margin: 150px 40% 0;
+        padding-top: 10px; padding-bottom: 22px; width: 20%; height: 150px; position: absolute;background: #FBFBF0; border: solid #D3D3D3 8px; visibility: hidden}
+
     </style>
 
   </head>
@@ -33,6 +40,18 @@
         <div style="text-align: center;">Password:</div>
         <div style="text-align: center;"><input type="password" id="passwordInput" autocomplete="off" size="14" /></div>
         <div style="text-align: center;"><input type="submit" id="submit" value="login" /></div>
+        <div style="text-align: center;"><button id="changeForm">Click here to register</button></div>
+      </form>
+    </div>
+
+    <div id="newPopupbox">
+      <form name="newForm" action="" >
+        <div style="text-align: center;">Username:</div>
+        <div style="text-align: center;"><input id="newUsernameInput" autocomplete="off" size="14" /></div>
+        <div style="text-align: center;">Password:</div>
+        <div style="text-align: center;"><input type="password" id="newPasswordInput" autocomplete="off" size="14" /></div>
+        <div style="text-align: center;"><input type="submit" id="newSubmit" value="register" /></div>
+        <div style="text-align: center;"><button id="changeFormAgain">Click here to login</button></div>
       </form>
     </div>
 
@@ -62,10 +81,15 @@
       var inputForm = document.getElementById('form');
       var sendMsg = document.getElementById('sendMsg');
       var input = document.getElementById('input');
+      var register = document.getElementById('changeForm');
+      var login = document.getElementById('changeFormAgain');
       let sendData = document.getElementById('sendData');
       let popupbox = document.getElementById("popupbox");
+      let newPopupbox = document.getElementById("newPopupbox");
       let usernameInput = document.getElementById("usernameInput");
       let passwordInput = document.getElementById("passwordInput");
+      let newUsernameInput = document.getElementById("newUsernameInput");
+      let newPasswordInput = document.getElementById("newPasswordInput");
       let fileInput = document.getElementById("fileUpload");
       let sendFile = document.getElementById("sfile");
 
@@ -74,29 +98,52 @@
       let username;
       let canChat = false;
 
+      //changes the form from login to register
+      register.addEventListener("click", function (e) {
+        e.preventDefault();
+        popupbox.style.visibility = "hidden";
+        newPopupbox.style.visibility = "visible";
+      });
+
+      //changes the form from register to login
+      login.addEventListener("click", function (e) {
+        e.preventDefault();
+        newPopupbox.style.visibility = "hidden";
+        popupbox.style.visibility = "visible";
+      });
+
       //When user logs in, username and password is send to server
       popupbox.addEventListener('submit', function(e) {
         e.preventDefault();
         if (usernameInput.value && passwordInput.value) {
-          socket.emit('details', {unm: usernameInput.value, pnw: passwordInput.value});
+          socket.emit('details', {unm: usernameInput.value, pnw: passwordInput.value, new: false});
+        }
+      });
+
+      newPopupbox.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (newUsernameInput.value && newPasswordInput.value) {
+          socket.emit('details', {unm: newUsernameInput.value, pnw: newPasswordInput.value, new: true});
         }
       });
 
       //The server sends back if login was successful or not
       socket.on("details", function(log) {
+
         //if login is successful closes the login, allows user to send messages, and sends joining message
         if(log.scs){
-          popupbox.style.visibility="hidden";
-          usersBl.style.visibility="visible";
-          messages.style.visibility="visible";
-          inputForm.style.visibility="visible";
-          canChat = true;
-          username = log.nme;
-          socket.emit("join", log.nme.toString())
-        }
-        //if login is not successful user gets a message
-        else{
-          alert("Username is already taken, choose something else.")
+            popupbox.style.visibility = "hidden";
+            newPopupbox.style.visibility = "hidden";
+            usersBl.style.visibility = "visible";
+            messages.style.visibility = "visible";
+            inputForm.style.visibility = "visible";
+            canChat = true;
+            username = log.nme;
+            socket.emit("join", log.nme.toString())
+
+          //if login is not successful user gets the message
+        } else{
+          alert(log.msg.toString());
         }
       });
 
