@@ -10,17 +10,19 @@
       #input:focus { outline: none; }
       #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #77ff7f; }
       #submit { background: #333; border: none; padding: 8px; margin: 0.25rem; border-radius: 3px; outline: none; color: #77ff7f; }
-      #messages { list-style-type: none; margin-left: 200px; margin-top: 0; padding: 0;}
+      #messages { list-style-type: none; margin-left: 200px; margin-top: 0; padding: 0; visibility: hidden}
       #messages > li { padding: 0.5rem 1rem; }
       #messages > li:nth-child(odd) { background: #efefef; }
       #users-block { width:190px; height: 100vh; float:left; background: #f5f5dc; word-wrap: break-word; position: fixed; overflow: scroll;}
-      #popupbox{ margin: 0; margin-left: 40%; margin-right: 40%; margin-top: 150px; padding-top: 10px; width: 20%; height: 150px; position: absolute;background: #FBFBF0; border: solid #D3D3D3 8px;}
+      #popupbox{
+        margin: 150px 40% 0;
+        padding-top: 10px; width: 20%; height: 150px; position: absolute;background: #FBFBF0; border: solid #D3D3D3 8px;}
     </style>
 
   </head>
   <body>
 
-    <div id="users-block">
+    <div id="users-block" style="visibility: hidden">
       <form id="user" style="margin-right:15px; padding: 18px" action=""></form>
     </div>
 
@@ -36,7 +38,7 @@
 
     <ul id="messages"></ul>
 
-    <form id="form" action="">
+    <form id="form" style="visibility: hidden" action="">
       <input id="input" autocomplete="off" />
       <button id="sendMsg">Send Msg</button>
       <button id="sendData">Send Data</button>
@@ -55,7 +57,9 @@
     <script>
       var socket = io();
       var user = document.getElementById('user');
+      var usersBl = document.getElementById('users-block')
       var messages = document.getElementById('messages');
+      var inputForm = document.getElementById('form');
       var sendMsg = document.getElementById('sendMsg');
       var input = document.getElementById('input');
       let sendData = document.getElementById('sendData');
@@ -83,6 +87,9 @@
         //if login is successful closes the login, allows user to send messages, and sends joining message
         if(log.scs){
           popupbox.style.visibility="hidden";
+          usersBl.style.visibility="visible";
+          messages.style.visibility="visible";
+          inputForm.style.visibility="visible";
           canChat = true;
           username = log.nme;
           socket.emit("join", log.nme.toString())
@@ -95,38 +102,40 @@
 
       //server sends a message for each user who joined or left the chat
       socket.on('hello', function(msg) {
-        var item = document.createElement('li');
-        item.textContent = msg;
-        item.style.color = "blue";
-        messages.appendChild(item);
-        window.scrollTo(0, document.body.scrollHeight);
+        if(canChat) {
+          var item = document.createElement('li');
+          item.textContent = msg;
+          item.style.color = "blue";
+          messages.appendChild(item);
+          window.scrollTo(0, document.body.scrollHeight);
+        }
       });
 
       //creates an updated list of all online users
       socket.on('join', function(online) {
-        userMap = new Map(online)
-        user.innerHTML = " ";
-        for (let person of userMap.values()){
-          var itemCheck = document.createElement('input');
-          var itemLabel = document.createElement('label');
-          var itemBr = document.createElement('br');
-          itemCheck.type ="checkbox";
-          itemCheck.id = person.toString();
-          itemCheck.value = person.toString();
-          itemLabel.for = person.toString()
-          itemLabel.textContent = person.toString();
-          itemLabel.style.color = "green";
-          user.appendChild(itemCheck);
-          user.appendChild(itemLabel);
-          user.appendChild(itemBr);
-        }
+          userMap = new Map(online)
+          user.innerHTML = " ";
+          for (let person of userMap.values()) {
+            var itemCheck = document.createElement('input');
+            var itemLabel = document.createElement('label');
+            var itemBr = document.createElement('br');
+            itemCheck.type = "checkbox";
+            itemCheck.id = person.toString();
+            itemCheck.value = person.toString();
+            itemLabel.for = person.toString()
+            itemLabel.textContent = person.toString();
+            itemLabel.style.color = "green";
+            user.appendChild(itemCheck);
+            user.appendChild(itemLabel);
+            user.appendChild(itemBr);
+          }
       });
 
       //extends the form, makes buttons for file upload visible
       sendData.addEventListener("click", function (e) {
         e.preventDefault();
         var extension = document.getElementById("multimedia");
-        if (extension.style.display === "none" && canChat) {
+        if (extension.style.display === "none") {
           extension.style.display = "block";
         } else {
           extension.style.display = "none";
@@ -162,48 +171,50 @@
 
       //Handling when user gets a multimedia file
       socket.on("leave", function(file) {
-        var item = document.createElement('li');
-        var media;
-        item.textContent = file.msg;
+        if(canChat) {
+          var item = document.createElement('li');
+          var media;
+          item.textContent = file.msg;
 
-        //if multimedia file is type video creates a video tag
-        if(file.type == "vid"){
-          media = document.createElement('video');
-          media.setAttribute('class', 'video-small');
-          media.setAttribute('controls', 'controls');
-          media.height = "300";
-          media.src = file.data;
+          //if multimedia file is type video creates a video tag
+          if (file.type == "vid") {
+            media = document.createElement('video');
+            media.setAttribute('class', 'video-small');
+            media.setAttribute('controls', 'controls');
+            media.height = "300";
+            media.src = file.data;
+          }
+
+          //if multimedia file is type image creates an img tag
+          else if (file.type == "img") {
+            media = document.createElement('img');
+            media.height = "300";
+            media.src = file.data;
+          }
+
+          //if multimedia file is type audio creates an audio tag
+          else if (file.type == "aud") {
+            media = document.createElement('audio');
+            media.setAttribute('controls', 'controls');
+            media.src = file.data;
+          }
+
+          //if multimedia file is something else creates a link to download the file
+          else {
+            media = document.createElement('a');
+            media.setAttribute('download', 'download');
+            media.href = file.data;
+            media.textContent = "Dowload File";
+            media.style.background = "#f5f5dc"
+            media.style.paddingRight = "10px";
+            media.style.paddingLeft = "10px";
+          }
+
+          media.style.marginLeft = "6px";
+          item.append(media);
+          messages.appendChild(item);
+          window.scrollTo(0, document.body.scrollHeight);
         }
-
-        //if multimedia file is type image creates an img tag
-        else if(file.type == "img") {
-          media = document.createElement('img');
-          media.height = "300";
-          media.src = file.data;
-        }
-
-        //if multimedia file is type audio creates an audio tag
-        else if(file.type == "aud") {
-          media = document.createElement('audio');
-          media.setAttribute('controls', 'controls');
-          media.src = file.data;
-        }
-
-        //if multimedia file is something else creates a link to download the file
-        else {
-          media = document.createElement('a');
-          media.setAttribute('download', 'download');
-          media.href = file.data;
-          media.textContent = "Dowload File";
-          media.style.background = "#f5f5dc"
-          media.style.paddingRight = "10px";
-          media.style.paddingLeft = "10px";
-        }
-
-        media.style.marginLeft = "6px";
-        item.append(media);
-        messages.appendChild(item);
-        window.scrollTo(0, document.body.scrollHeight);
       });
 
       //checks to whom, the message will be send and stores this information inside a Map
@@ -218,10 +229,10 @@
         return subUserMap;
       }
 
-      //sends the message and Map of selected recipients, but only if user has logged in successful
+      //sends the message and Map of selected recipients
       sendMsg.addEventListener('click', function(e) {
         e.preventDefault();
-        if (input.value && canChat) {
+        if (input.value) {
           var timestamp = new Date();
           socket.emit('chat message', {msg: timestamp.getHours() + ':' + timestamp.getMinutes() + ' ' + username + ': <' + input.value + '>', recip: Array.from(getCheckedUsers())});
           input.value = '';
@@ -230,10 +241,12 @@
 
       //displays chat messages from server
       socket.on('chat message', function(msg) {
-        var item = document.createElement('li');
-        item.textContent = msg;
-        messages.appendChild(item);
-        window.scrollTo(0, document.body.scrollHeight);
+        if(canChat) {
+          var item = document.createElement('li');
+          item.textContent = msg;
+          messages.appendChild(item);
+          window.scrollTo(0, document.body.scrollHeight);
+        }
       });
 
     </script>
