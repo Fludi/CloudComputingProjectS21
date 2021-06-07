@@ -91,6 +91,7 @@
       let newPasswordInput = document.getElementById("newPasswordInput");
       let fileInput = document.getElementById("fileUpload");
       let sendFile = document.getElementById("sfile");
+      let image = document.getElementById("pictureUpload");
 
       let userMap;
       let subUserMap;
@@ -121,8 +122,19 @@
 
       newPopupbox.addEventListener('submit', function(e) {
         e.preventDefault();
-        if (newUsernameInput.value && newPasswordInput.value) {
-          socket.emit('details', {unm: newUsernameInput.value, pnw: newPasswordInput.value, new: true});
+        var file = image.files[0];
+        if (newUsernameInput.value && newPasswordInput.value && file) {
+          var reader = new FileReader();
+          //sends the file according to the type of the file
+          reader.onload = function () {
+            socket.emit('details', {unm: newUsernameInput.value, pnw: newPasswordInput.value, new: true, img: reader.result});
+          }
+
+        if (file) {
+          reader.readAsDataURL(file);
+        }
+        } else{
+          alert("Please enter username, password and upload a profile picture");
         }
       });
 
