@@ -107,6 +107,7 @@ io.on('connection', (socket) => {
           io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
           }
 
+
           else {
           io.to(socket.id).emit('details', {scs: false, nme: log.unm, msg: "Login failed: Incorrect password"});
           }
