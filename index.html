@@ -73,7 +73,7 @@
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
-  var socket = io();
+  var socket = io("http//:localhost");
   var user = document.getElementById('user');
   var usersBl = document.getElementById('users-block')
   var messages = document.getElementById('messages');
