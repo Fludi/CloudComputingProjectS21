@@ -66,6 +66,7 @@ async function hashIt(password){
 }
 */
 
+const helmet = require("helmet");
 const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http, { maxHttpBufferSize: 10e7});
@@ -75,7 +76,7 @@ let onlineMap = new Map();
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
-
+app.use(helmet());
 io.on('connection', (socket) => {
 
   //login function
