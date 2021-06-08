@@ -70,8 +70,10 @@ const app = require('express')();
 
 const fs = require("fs");
 const options = {
-  key: fs.readFileSync(__dirname + '/key.pem'),
-  cert: fs.readFileSync(__dirname + '/cert.pem')
+  key: fs.readFileSync(__dirname + '/key.pem').toString(),
+  cert: fs.readFileSync(__dirname + '/cert.pem').toString(),
+  requestCert: false,
+  rejectUnauthorized: false
 };
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
