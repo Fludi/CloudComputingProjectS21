@@ -76,11 +76,7 @@ let onlineMap = new Map();
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
-app.use(
-    helmet.contentSecurityPolicy({
-      useDefaults: true,
-    })
-);
+app.use(helmet());
 
 io.on('connection', (socket) => {
 
