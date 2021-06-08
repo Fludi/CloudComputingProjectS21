@@ -68,16 +68,9 @@ async function hashIt(password){
 
 const helmet = require("helmet");
 const app = require('express')();
-
-const fs = require("fs");
-const options = {
-  key: fs.readFileSync(__dirname + '/key.pem'),
-  cert: fs.readFileSync(__dirname + '/cert.pem')
-};
-
 app.use(helmet());
-const https = require('https').createServer(options, app);
-const io = require('socket.io')(https, { maxHttpBufferSize: 10e7});
+const http = require('http').Server(app);
+const io = require('socket.io')(http, { maxHttpBufferSize: 10e7});
 const port = process.env.PORT || 3000;
 let onlineMap = new Map();
 
@@ -224,6 +217,6 @@ io.on('connection', (socket) => {
 
 });
 
-https.listen(port, () => {
+http.listen(port, () => {
   console.log(`Socket.IO server running at http://localhost:${port}/`);
 });
