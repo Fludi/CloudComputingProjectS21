@@ -78,9 +78,11 @@ app.get('/', (req, res) => {
   res.end('Hello World\n');
   //sendFile(__dirname + '/index.html');
 });
-app.use(helmet());
-
-
+app.use(
+    helmet({
+      contentSecurityPolicy: true,
+    })
+);
 io.on('connection', (socket) => {
 
   //login function
