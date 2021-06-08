@@ -81,7 +81,8 @@ const port = process.env.PORT || 3000;
 https.listen(port, () => {
   console.log(`Socket.IO server running at https://localhost:${port}/`);
 });
-const io = require('socket.io')(https, { maxHttpBufferSize: 10e7, secure: true});
+const io = require('socket.io')(https, { maxHttpBufferSize: 10e7, secure: true, reconnect: true,
+    rejectUnauthorized : false});
 let onlineMap = new Map();
 
 //---------------------------------------------------------------------------------------------------------------------
