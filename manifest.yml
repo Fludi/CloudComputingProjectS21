@@ -1,4 +1,4 @@
 applications:
-  - name: 6S_CloudComputing
+  - name: ibm-simplechat
     memory: 512M
     instances: 1

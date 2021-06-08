@@ -1,4 +1,4 @@
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
 
@@ -67,27 +67,14 @@ async function hashIt(password){
 */
 
 const app = require('express')();
+const http = require('http').Server(app);
+const io = require('socket.io')(http, { maxHttpBufferSize: 10e7});
+const port = process.env.PORT || 3000;
+let onlineMap = new Map();
 
-const fs = require("fs");
-const options = {
-  key: fs.readFileSync(__dirname + '/key.pem').toString(),
-  cert: fs.readFileSync(__dirname + '/cert.pem').toString(),
-  requestCert: false,
-  rejectUnauthorized: false
-};
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
-const https = require('https').createServer(options, app);
-const port = process.env.PORT || 3000;
-https.listen(port, () => {
-  console.log(`Socket.IO server running at https://localhost:${port}/`);
-});
-const io = require('socket.io')(https, { maxHttpBufferSize: 10e7, secure: true, reconnect: true,
-    rejectUnauthorized : false});
-let onlineMap = new Map();
-
-//---------------------------------------------------------------------------------------------------------------------
 
 io.on('connection', (socket) => {
 
@@ -107,12 +94,11 @@ io.on('connection', (socket) => {
         //if user does exist and password is correct continue login
         if (result != null && !log.new) {
           if (log.unm == result.name && log.pnw == result.password) {
-          io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
+            io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
           }
 
-
           else {
-          io.to(socket.id).emit('details', {scs: false, nme: log.unm, msg: "Login failed: Incorrect password"});
+            io.to(socket.id).emit('details', {scs: false, nme: log.unm, msg: "Login failed: Incorrect password"});
           }
 
         } else if (result != null && log.new) {
@@ -137,6 +123,8 @@ io.on('connection', (socket) => {
       });
     });
   }
+
+//---------------------------------------------------------------------------------------------------------------------
 
   socket.on("details", log => {
     login(log);
@@ -223,4 +211,8 @@ io.on('connection', (socket) => {
     }
   });
 
+});
+
+http.listen(port, () => {
+  console.log(`Socket.IO server running at http://localhost:${port}/`);
 });
