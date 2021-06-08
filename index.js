@@ -68,14 +68,22 @@ async function hashIt(password){
 
 const helmet = require("helmet");
 const app = require('express')();
+
+const fs = require("fs");
+const options = {
+  key: fs.readFileSync(__dirname + '/key.pem'),
+  cert: fs.readFileSync(__dirname + '/cert.pem')
+};
+
 app.use(helmet());
-const http = require('http').Server(app);
-const io = require('socket.io')(http, { maxHttpBufferSize: 10e7});
+const https = require('https').createServer(options, app);
+const io = require('socket.io')(https, { maxHttpBufferSize: 10e7});
 const port = process.env.PORT || 3000;
 let onlineMap = new Map();
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.end('Hello World\n');
   //sendFile(__dirname + '/index.html');
 });
 
