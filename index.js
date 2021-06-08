@@ -78,12 +78,6 @@ app.get('/', (req, res) => {
 });
 app.use(helmet());
 
-app.use(helmet.contentSecurityPolicy({
-  connectSrc: [
-    "'self'",
-    "ws://https://ibm-simplechat.eu-de.mybluemix.net/
-  ]
-}));
 
 io.on('connection', (socket) => {
 
