@@ -75,8 +75,7 @@ const port = process.env.PORT || 3000;
 let onlineMap = new Map();
 
 app.get('/', (req, res) => {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.end('Hello World\n');
+  res.sendFile(__dirname + '/index.html');
   //sendFile(__dirname + '/index.html');
 });
 
