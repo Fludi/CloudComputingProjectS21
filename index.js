@@ -68,6 +68,7 @@ async function hashIt(password){
 
 const helmet = require("helmet");
 const app = require('express')();
+app.use(helmet());
 const http = require('http').Server(app);
 const io = require('socket.io')(http, { maxHttpBufferSize: 10e7});
 const port = process.env.PORT || 3000;
@@ -78,11 +79,7 @@ app.get('/', (req, res) => {
   res.end('Hello World\n');
   //sendFile(__dirname + '/index.html');
 });
-app.use(
-    helmet({
-      contentSecurityPolicy: true,
-    })
-);
+
 io.on('connection', (socket) => {
 
   //login function
