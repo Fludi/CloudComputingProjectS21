@@ -64,7 +64,7 @@ const app = require('express')();
 app.use(helmet());
 app.use(
     helmet({
-      contentSecurityPolicy: false,
+      contentSecurityPolicy: https: 'unsafe-inline';,
     })
 );
 
