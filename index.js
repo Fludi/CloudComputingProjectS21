@@ -62,11 +62,6 @@ async function getbyname(){
 const helmet = require("helmet");
 const app = require('express')();
 app.use(helmet());
-app.use(
-    helmet({
-      contentSecurityPolicy: https: 'unsafe-inline';,
-    })
-);
 
 app.enable('trust proxy');
 
