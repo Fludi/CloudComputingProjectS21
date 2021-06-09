@@ -65,18 +65,44 @@ async function hashIt(password){
   return hashed;
 }
 */
-const helmet = require("helmet");
+//const helmet = require("helmet");
 const app = require('express')();
-app.use(helmet());
+//app.use(helmet());
+
+
+
+const csp = require('content-security-policy');
+const helmet = require("helmet");
+
+
+// content-security-policy
+const cspPolicy = {
+  'report-uri': '/reporting',
+  'default-src': csp.SRC_NONE,
+  'script-src': [ csp.SRC_SELF, csp.SRC_DATA ]
+};
+
+const globalCSP = csp.getCSP(csp.STARTER_OPTIONS);
+const localCSP = csp.getCSP(cspPolicy);
+
+app.use(helmet()); // Add Helmet as a middleware
+app.use(helmet.xssFilter())
+
+// This will apply the security policy to all requests if no local policy is set
+app.use(globalCSP);
+
+// This will apply the local security policy just to this path, overriding the global policy
+app.get('/local', localCSP, (req, res) => {
+});
 
 app.enable('trust proxy');
 
 app.use (function (req, res, next) {
   if (req.secure) {
-    // request was via https, so do no special handling
+    //https, no special handling
     next();
   } else {
-    // request was via http, so redirect to https
+    //http, redirect to https
     res.redirect('https://' + req.headers.host + req.url);
   }
 });
@@ -88,7 +114,6 @@ let onlineMap = new Map();
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
-  //sendFile(__dirname + '/index.html');
 });
 
 io.on('connection', (socket) => {
