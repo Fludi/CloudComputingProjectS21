@@ -71,6 +71,8 @@ app.use(helmet());
 
 app.enable('trust proxy');
 
+app.use("/public", express.static(__dirname + "/public"));
+
 app.use (function (req, res, next) {
   if (req.secure) {
     //https, no special handling
