@@ -66,7 +66,7 @@ app.use(
     helmet.contentSecurityPolicy({
       useDefaults: true,
       directives: {
-        "script-src": ["'self'", "unsafe-inline", 'nonce-EDNnf03nceIOfn39fn3e9h3sdfa'],
+        "script-src": ['nonce-EDNnf03nceIOfn39fn3e9h3sdfa'],
       },
     })
 );
