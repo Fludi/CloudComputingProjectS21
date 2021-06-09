@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
 
@@ -61,6 +62,11 @@ async function getbyname(){
 const helmet = require("helmet");
 const app = require('express')();
 app.use(helmet());
+app.use(
+    helmet({
+      contentSecurityPolicy: false,
+    })
+);
 /*
 app.enable('trust proxy');
 
@@ -75,7 +81,7 @@ app.use (function (req, res, next) {
 });
 */
 const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const io = require('socket.io')(http, { maxHttpBufferSize: 10e7});
 const port = process.env.PORT || 3000;
 let onlineMap = new Map();
 
