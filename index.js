@@ -2,7 +2,7 @@ const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
 
 async function run(name) {
-  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, secure:true });
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, });
   try {
     await client.connect();
     console.log("Connected correctly to server");
@@ -69,7 +69,7 @@ const app = require('express')();
 app.use(helmet());
 
 app.enable('trust proxy');
-
+/*
 app.use (function (req, res, next) {
   if (req.secure) {
     //https, no special handling
@@ -79,9 +79,9 @@ app.use (function (req, res, next) {
     res.redirect('https://' + req.headers.host + req.url);
   }
 });
-
+*/
 const http = require('http').Server(app);
-const io = require('socket.io')(http, { maxHttpBufferSize: 10e7});
+const io = require('socket.io')(http, { maxHttpBufferSize: 10e7, socket: true});
 const port = process.env.PORT || 3000;
 let onlineMap = new Map();
 
