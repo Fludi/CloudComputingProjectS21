@@ -74,19 +74,19 @@
 
 <script>
 
-  var socket = io("https://localhost");
-  var user = document.getElementById('user');
-  var usersBl = document.getElementById('users-block')
-  var messages = document.getElementById('messages');
-  var inputForm = document.getElementById('form');
-  var sendMsg = document.getElementById('sendMsg');
-  var input = document.getElementById('input');
+//  var socket = io("https://localhost");
+  //var user = document.getElementById('user');
+  //var usersBl = document.getElementById('users-block')
+  //var messages = document.getElementById('messages');
+  //var inputForm = document.getElementById('form');
+  //var sendMsg = document.getElementById('sendMsg');
+  //var input = document.getElementById('input');
   var register = document.getElementById('changeForm');
   var login = document.getElementById('changeFormAgain');
-  let sendData = document.getElementById('sendData');
+  //let sendData = document.getElementById('sendData');
   let popupbox = document.getElementById("popupbox");
   let newPopupbox = document.getElementById("newPopupbox");
-  let usernameInput = document.getElementById("usernameInput");
+ /* let usernameInput = document.getElementById("usernameInput");
   let passwordInput = document.getElementById("passwordInput");
   let newUsernameInput = document.getElementById("newUsernameInput");
   let newPasswordInput = document.getElementById("newPasswordInput");
@@ -98,7 +98,7 @@
   let subUserMap;
   let username;
   let canChat = false;
-
+*/
   //changes the form from login to register
   register.addEventListener("click", function (e) {
     e.preventDefault();
@@ -112,7 +112,7 @@
     newPopupbox.style.visibility = "hidden";
     popupbox.style.visibility = "visible";
   });
-
+/*
   //When user logs in, username and password is send to server
   popupbox.addEventListener('submit', function(e) {
     e.preventDefault();
@@ -307,7 +307,7 @@
       window.scrollTo(0, document.body.scrollHeight);
     }
   });
-
+*/
 </script>
 </body>
 </html>
