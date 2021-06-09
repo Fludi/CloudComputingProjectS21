@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "my first socket.io app",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
     "helmet": "^4.6.0",
     "mongodb": "^3.6.6",
