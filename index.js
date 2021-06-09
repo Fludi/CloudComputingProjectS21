@@ -66,6 +66,7 @@ async function hashIt(password){
   return hashed;
 }
 */
+//helmet hinzugefügt
 
 const app = require('express')();
 const helmet = require("helmet");
