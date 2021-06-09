@@ -68,7 +68,8 @@ async function hashIt(password){
 */
 
 const app = require('express')();
-
+const helmet = require('helmet');
+app.use(helmet());
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
