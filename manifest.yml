@@ -1,4 +1,0 @@
-applications:
-  - name: ibm-simplechat
-    memory: 512M
-    instances: 1

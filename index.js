@@ -1,9 +1,10 @@
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
 
 async function run(name) {
-  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, secure:true });
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
   try {
     await client.connect();
     console.log("Connected correctly to server");
@@ -65,36 +66,34 @@ async function hashIt(password){
   return hashed;
 }
 */
-const helmet = require("helmet");
+
 const app = require('express')();
-app.use(helmet());
 
-app.enable('trust proxy');
-
-app.use (function (req, res, next) {
-  if (req.secure) {
-    //https, no special handling
-    next();
-  } else {
-    //http, redirect to https
-    res.redirect('https://' + req.headers.host + req.url);
-  }
-});
-
-const http = require('http').Server(app);
-const io = require('socket.io')(http, { maxHttpBufferSize: 10e7});
-const port = process.env.PORT || 3000;
-let onlineMap = new Map();
-
+const fs = require("fs");
+const options = {
+  key: fs.readFileSync(__dirname + '/key.pem'),
+  cert: fs.readFileSync(__dirname + '/cert.pem')
+};
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
+const https = require('https').createServer(options, app);
+const port = process.env.PORT || 3000;
+https.listen(port, () => {
+  console.log(`Socket.IO server running at https://localhost:${port}/`);
+});
+const io = require('socket.io')(https, { maxHttpBufferSize: 10e7, secure: true});
+let onlineMap = new Map();
+
+//---------------------------------------------------------------------------------------------------------------------
 
 io.on('connection', (socket) => {
 
   //login function
   async function login(log){
     // database connection
+    console.log('in lof versuch');
+    log.pnw = crypto.createHash('md5').update(log.pnw).digest("hex");
     var MongoClient = require('mongodb').MongoClient;
     var url = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
     await MongoClient.connect(url, function(err, db) {
@@ -105,40 +104,36 @@ io.on('connection', (socket) => {
       dbo.collection("benutzerdaten").findOne({name :log.unm}, function(err, result) {
         if (err) throw err;
 
+        //if user does not exist yet, create a new entry in the database and continue login
+        if (result == null) {
+          dbo.collection("benutzerdaten").insertOne({
+            name: log.unm,
+            password: log.pnw
+          });
+          io.to(socket.id).emit('details', {scs: true, nme: log.unm});
+
         //if user does exist and password is correct continue login
-        if (result != null && !log.new) {
-          if (log.unm == result.name && log.pnw == result.password) {
-            io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
-          }
+        } else if (log.unm == result.name && log.pnw == result.password) {
+          io.to(socket.id).emit('details', {scs: true, nme: log.unm});
 
-          else {
-            io.to(socket.id).emit('details', {scs: false, nme: log.unm, msg: "Login failed: Incorrect password"});
-          }
-
-        } else if (result != null && log.new) {
-          io.to(socket.id).emit('details', {scs: false, nme: log.unm, msg: "Registration failed: Username already taken"});
-
+        //if user does exist but password is wrong dicontinue login
         } else {
-          if (!log.new) {
-            io.to(socket.id).emit('details', {scs: false, nme: log.unm, msg: "Login failed: Username does not exist"});
-
-            //if user does not exist yet, create a new entry in the database continue registration
-          } else {
-            dbo.collection("benutzerdaten").insertOne({
-              name: log.unm,
-              password: log.pnw
-            });
-            io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
-          }
+          io.to(socket.id).emit('details', {scs: false, nme: log.unm});
         }
+        console.log('vor db close');
+        console.log(log.unm);
+        console.log(log.pnw);
+        console.log('hashversuch');
+
+        //log.pnw = crypto.createHash('md5').update(log.pnw).digest("hex");
+        console.log(log.pnw);
+        //console.log(result.password);
 
         //close database connection
         db.close();
       });
     });
   }
-
-//---------------------------------------------------------------------------------------------------------------------
 
   socket.on("details", log => {
     login(log);
@@ -225,8 +220,4 @@ io.on('connection', (socket) => {
     }
   });
 
-});
-
-http.listen(port, () => {
-  console.log(`Socket.IO server running at https://localhost:${port}/`);
 });
