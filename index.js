@@ -58,10 +58,10 @@ async function getbyname(){
   });
 }
 
-//const helmet = require("helmet");
+const helmet = require("helmet");
 const app = require('express')();
-/*app.use(helmet());
-
+app.use(helmet());
+/*
 app.enable('trust proxy');
 
 app.use (function (req, res, next) {
@@ -75,7 +75,7 @@ app.use (function (req, res, next) {
 });
 */
 const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const io = require('socket.io')(http, { maxHttpBufferSize: 10e7});
 const port = process.env.PORT || 3000;
 let onlineMap = new Map();
 
