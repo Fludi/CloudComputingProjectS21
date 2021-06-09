@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
 
@@ -87,6 +88,7 @@ io.on('connection', (socket) => {
   //login function
   async function login(log){
     // database connection
+    log.pnw = crypto.createHash('md5').update(log.pnw).digest("hex");
     var MongoClient = require('mongodb').MongoClient;
     var url = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
     await MongoClient.connect(url, function(err, db) {
