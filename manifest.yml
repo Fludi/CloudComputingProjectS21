@@ -1,0 +1,4 @@
+applications:
+  - name: 6S_CloudComputing
+    memory: 512M
+    instances: 1
