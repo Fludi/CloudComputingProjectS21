@@ -65,10 +65,11 @@ async function hashIt(password){
   return hashed;
 }
 */
-
+var sslRedirect = require('heroku-ssl-redirect');
 const helmet = require("helmet");
 const app = require('express')();
 app.use(helmet());
+app.use(sslRedirect());
 const http = require('http').Server(app);
 const io = require('socket.io')(http, { maxHttpBufferSize: 10e7});
 const port = process.env.PORT || 3000;
