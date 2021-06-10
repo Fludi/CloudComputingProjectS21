@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const helmet = require("helmet");
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
 
@@ -67,6 +68,8 @@ async function hashIt(password){
 */
 
 const app = require('express')();
+app.use(helmet());
+
 const http = require('http').Server(app);
 const io = require('socket.io')(http, { maxHttpBufferSize: 10e7});
 const port = process.env.PORT || 3000;

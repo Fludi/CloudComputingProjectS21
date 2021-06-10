@@ -4,6 +4,7 @@
   "description": "my first socket.io app",
   "dependencies": {
     "crypto-js": "^4.0.0",
+    "helmet": "^4.6.0",
     "express": "^4.17.1",
     "mongoose": "^5.12.3",
     "socket.io": "^3.1.2",
@@ -13,5 +14,7 @@
   "scripts": {
     "start": "node index.js"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "helmet": "^4.6.0"
+  }
 }
