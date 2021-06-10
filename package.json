@@ -5,14 +5,12 @@
   "dependencies": {
     "bcrypt": "^5.0.1",
     "crypto-js": "^4.0.0",
-    "csp": "0.0.1-alpha1",
-    "content-security-policy": "^0.3.3",
-    "express": "^4.17.1",
     "helmet": "^4.6.0",
-    "mongodb": "^3.6.6",
+    "express": "^4.17.1",
     "mongoose": "^5.12.3",
     "socket.io": "^3.1.2",
-    "socket.io-stream": "^0.9.1"
+    "socket.io-stream": "^0.9.1",
+    "mongodb": "^3.6.6"
   },
   "scripts": {
     "start": "node index.js"

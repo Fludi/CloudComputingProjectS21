@@ -66,30 +66,25 @@ async function hashIt(password){
   return hashed;
 }
 */
-//helmet
+
 const app = require('express')();
-const helmet = require("helmet");
+const helmet = require('helmet');
 app.use(helmet());
+
+const http = require('http').Server(app);
+const io = require('socket.io')(http, { maxHttpBufferSize: 10e7});
+const port = process.env.PORT || 3000;
+let onlineMap = new Map();
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
-const http = require('http').Server( app);
-const port = process.env.PORT || 3000;
-http.listen(port, () => {
-  console.log(`Socket.IO server running at http://localhost:${port}/`);
-});
-const io = require('socket.io')(http, { maxHttpBufferSize: 10e7});
-let onlineMap = new Map();
-
-//---------------------------------------------------------------------------------------------------------------------
 
 io.on('connection', (socket) => {
 
   //login function
   async function login(log){
     // database connection
-    console.log('in lof versuch');
     log.pnw = crypto.createHash('md5').update(log.pnw).digest("hex");
     var MongoClient = require('mongodb').MongoClient;
     var url = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
@@ -101,36 +96,40 @@ io.on('connection', (socket) => {
       dbo.collection("benutzerdaten").findOne({name :log.unm}, function(err, result) {
         if (err) throw err;
 
-        //if user does not exist yet, create a new entry in the database and continue login
-        if (result == null) {
-          dbo.collection("benutzerdaten").insertOne({
-            name: log.unm,
-            password: log.pnw
-          });
-          io.to(socket.id).emit('details', {scs: true, nme: log.unm});
-
         //if user does exist and password is correct continue login
-        } else if (log.unm == result.name && log.pnw == result.password) {
-          io.to(socket.id).emit('details', {scs: true, nme: log.unm});
+        if (result != null && !log.new) {
+          if (log.unm == result.name && log.pnw == result.password) {
+            io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
+          }
 
-        //if user does exist but password is wrong dicontinue login
+          else {
+            io.to(socket.id).emit('details', {scs: false, nme: log.unm, msg: "Login failed: Incorrect password"});
+          }
+
+        } else if (result != null && log.new) {
+          io.to(socket.id).emit('details', {scs: false, nme: log.unm, msg: "Registration failed: Username already taken"});
+
         } else {
-          io.to(socket.id).emit('details', {scs: false, nme: log.unm});
-        }
-        console.log('vor db close');
-        console.log(log.unm);
-        console.log(log.pnw);
-        console.log('hashversuch');
+          if (!log.new) {
+            io.to(socket.id).emit('details', {scs: false, nme: log.unm, msg: "Login failed: Username does not exist"});
 
-        //log.pnw = crypto.createHash('md5').update(log.pnw).digest("hex");
-        console.log(log.pnw);
-        //console.log(result.password);
+            //if user does not exist yet, create a new entry in the database continue registration
+          } else {
+            dbo.collection("benutzerdaten").insertOne({
+              name: log.unm,
+              password: log.pnw
+            });
+            io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
+          }
+        }
 
         //close database connection
         db.close();
       });
     });
   }
+
+//---------------------------------------------------------------------------------------------------------------------
 
   socket.on("details", log => {
     login(log);
@@ -217,4 +216,8 @@ io.on('connection', (socket) => {
     }
   });
 
+});
+
+http.listen(port, () => {
+  console.log(`Socket.IO server running at http://localhost:${port}/`);
 });
