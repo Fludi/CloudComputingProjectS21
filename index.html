@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'sha256-8xcOdon/a0KgAYhLUjgzSWAnxT9hW2fGpWnWL9R7T9U=';">
-
   <title>Simple Cloud</title>
 
   <style>
@@ -72,9 +70,9 @@
 </form>
 
 
-<script sha256="8xcOdon/a0KgAYhLUjgzSWAnxT9hW2fGpWnWL9R7T9U=" src="/socket.io/socket.io.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 
-<script sha256="8xcOdon/a0KgAYhLUjgzSWAnxT9hW2fGpWnWL9R7T9U=">
+<script>
   var socket = io();
   var user = document.getElementById('user');
   var usersBl = document.getElementById('users-block')
