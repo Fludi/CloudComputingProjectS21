@@ -68,6 +68,16 @@ async function hashIt(password){
 */
 
 const app = require('express')();
+
+const csp = require('content-security-policy');
+const cspPolicy = {
+  'default-src': 'self',
+  'script-src': 'unsafe-inline'
+};
+
+const localCSP = csp.getCSP(cspPolicy);
+app.use(localCSP);
+
 const helmet = require('helmet');
 app.use(helmet());
 

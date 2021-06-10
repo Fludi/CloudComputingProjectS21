@@ -15,5 +15,7 @@
   "scripts": {
     "start": "node index.js"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "content-security-policy": "^0.3.4"
+  }
 }
