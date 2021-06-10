@@ -68,19 +68,6 @@ async function hashIt(password){
 */
 
 const app = require('express')();
-
-const { expressCspHeader, INLINE, NONE, SELF } = require('express-csp-header');
-
-app.use(expressCspHeader({
-  directives: {
-    'default-src': [SELF],
-    'script-src': [SELF, INLINE, 'https://ibm-simplechat.eu-de.mybluemix.net/'],
-    'img-src': ['data:', 'images.com'],
-    'worker-src': [NONE],
-    'block-all-mixed-content': true
-  }
-}));
-
 const helmet = require('helmet');
 app.use(helmet());
 
