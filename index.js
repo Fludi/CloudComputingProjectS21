@@ -69,6 +69,19 @@ async function hashIt(password){
 
 const app = require('express')();
 app.use(helmet());
+app.use(
+    helmet.contentSecurityPolicy({
+      directives: {
+        "default-src": ["'self'"],
+        "connect-src": ["'self'", "'unsafe-inline'"],
+        "img-src": ["'self'", "data:"],
+        "style-src-elem": ["'self'", "data:"],
+        "script-src": ["'unsafe-inline'", "'self'"],
+        "object-src": ["'none'"],
+      },
+    })
+);
+
 
 const http = require('http').Server(app);
 const io = require('socket.io')(http, { maxHttpBufferSize: 10e7});
