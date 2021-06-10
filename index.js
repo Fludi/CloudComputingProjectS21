@@ -72,8 +72,12 @@ app.use(helmet());
 app.use(
     helmet.contentSecurityPolicy({
       directives: {
-        "default-src": ["'self'"],
+        "default-src": ["'unsafe-inline'","'self'"],
+        "connect-src": ["'self'", "'unsafe-inline'"],
+        "img-src": ["'self'", "data:"],
+        "style-src-elem": ["'unsafe-inline'","'self'", "data:"],
         "script-src": ["'unsafe-inline'", "'self'"],
+        "object-src": ["'none'"],
       },
     })
 );
