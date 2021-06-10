@@ -67,6 +67,7 @@ async function hashIt(password){
 }
 */
 
+
 const app = require('express')();
 app.use(helmet());
 app.use(
@@ -84,6 +85,17 @@ app.use(
     })
 );
 
+app.enable('trust proxy');
+
+app.use (function (req, res, next) {
+  if (req.secure) {
+    //https, no special handling
+    next();
+  } else {
+    //http, redirect to https
+    res.redirect('https://' + req.headers.host + req.url);
+  }
+});
 
 const http = require('http').Server(app);
 const io = require('socket.io')(http, { maxHttpBufferSize: 10e7});
