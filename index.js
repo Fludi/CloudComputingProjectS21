@@ -75,9 +75,9 @@ app.use(
         "default-src": ["'self'"],
         "connect-src": ["'self'"],
         "img-src": ["'self'", "data:"],
-        "style-src-elem": ["'self'"],
-        "style-src": [ "'self'"],
-        "script-src": [ "'self'"],
+        "style-src-elem": ["'unsafe-inline'","'self'", "data:"],
+        "style-src": ["'unsafe-inline'", "'self'"],
+        "script-src": ["'unsafe-inline'", "'self'"],
         "object-src": ["'none'"],
       },
     })
