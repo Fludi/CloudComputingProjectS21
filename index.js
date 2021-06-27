@@ -59,16 +59,11 @@ async function getbyname(){
   });
 }
 
-/* Unused Hash-function -- does not work
-async function hashIt(password){
-  const salt = await bcrypt.genSalt(6);
-  const hashed = await bcrypt.hash(password, salt);
-  return hashed;
-}
-*/
-
+//---------------------------------------------------------------------------------------------------------------------
 
 const app = require('express')();
+
+//helmet for security header
 app.use(helmet());
 app.use(
     helmet.contentSecurityPolicy({
@@ -85,6 +80,8 @@ app.use(
     })
 );
 
+
+//for redirecting to https
 app.enable('trust proxy');
 
 app.use (function (req, res, next) {
@@ -154,8 +151,6 @@ io.on('connection', (socket) => {
       });
     });
   }
-
-//---------------------------------------------------------------------------------------------------------------------
 
   socket.on("details", log => {
     login(log);
