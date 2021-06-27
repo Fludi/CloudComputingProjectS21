@@ -66,7 +66,7 @@ const app = express();
 
 //helmet for security header
 app.use(helmet());
-app.use(
+/*app.use(
     helmet.contentSecurityPolicy({
       directives: {
         "default-src": ["'self'"],
@@ -79,7 +79,7 @@ app.use(
         "object-src": ["'none'"],
       },
     })
-);
+);*/
 
 
 //for redirecting to https
