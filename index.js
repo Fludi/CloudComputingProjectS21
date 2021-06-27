@@ -61,7 +61,8 @@ async function getbyname(){
 
 //---------------------------------------------------------------------------------------------------------------------
 
-const app = require('express')();
+const express = require('express');
+const app = express();
 
 //helmet for security header
 app.use(helmet());
@@ -102,6 +103,8 @@ let onlineMap = new Map();
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
+
+app.use("/public", express.static(__dirname + "/public"));
 
 io.on('connection', (socket) => {
 
