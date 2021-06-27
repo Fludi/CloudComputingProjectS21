@@ -111,3 +111,29 @@ body {
 
 #multimedia {
     display: none; }
+
+#div1 {
+    text-align: center; }
+
+#div2 {
+    text-align: center;
+    margin-top: 10px; }
+
+#div3 {
+    text-align: center; }
+
+#div4 {
+    text-align: center; }
+
+#div5 {
+    text-align: center;
+    margin-top: 10px; }
+
+#div6 {
+    text-align: center; }
+
+#div7 {
+    text-align: center; }
+
+#p1 {
+    margin-bottom: 5px; }
