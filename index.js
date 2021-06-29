@@ -159,7 +159,7 @@ io.on('connection', (socket) => {
                 io.emit('hello', ins);
                  dbo.collection("benutzerdaten").insertOne({
                   name: log.unm,
-                  password: hash
+                  password: ins
                 });
             }
             //io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
