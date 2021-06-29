@@ -119,12 +119,12 @@ io.on('connection', (socket) => {
 
     var MongoClient = require('mongodb').MongoClient;
     var url = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
-    await MongoClient.connect(url, function(err, db) {
+    await MongoClient.connect(url, async function(err, db) {
       if (err) throw err;
       //defines database
       var dbo = db.db("cloudcomputingcluster");
       // search for a database entry with name = loginname
-      dbo.collection("benutzerdaten").findOne({name :log.unm}, function(err, result) {
+      await dbo.collection("benutzerdaten").findOne({name :log.unm}, async function(err, result) {
         if (err) throw err;
 
         //if user does exist and password is correct continue login
@@ -150,17 +150,15 @@ io.on('connection', (socket) => {
 
             //if user does not exist yet, create a new entry in the database continue registration
           } else {
-            let ins = 0;
-              bcrypt.hash(log.pnw, saltRoundsValue, async function(err, hash) {
+              await bcrypt.hash(log.pnw, saltRoundsValue, async function(err, hash) {
                 if (err) throw err;
-                ins = await hash;
-              });
                 io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
-                io.emit('hello', ins);
-                 dbo.collection("benutzerdaten").insertOne({
+                await io.emit('hello', hash);
+                dbo.collection("benutzerdaten").insertOne({
                   name: log.unm,
-                  password: ins
+                  password: hash
                 });
+              });
             }
             //io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
           }
