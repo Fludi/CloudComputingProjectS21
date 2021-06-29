@@ -61,13 +61,6 @@ async function getbyname(){
   });
 }
 
-async function hashThis(pn){
-  bcrypt.hash(pn, saltRoundsValue, async function(err, hash) {
-    if (err) throw err;
-    const newHash = await hash;
-    return newHash;
-  });
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 
@@ -157,16 +150,19 @@ io.on('connection', (socket) => {
 
             //if user does not exist yet, create a new entry in the database continue registration
           } else {
-              const pnHash = hashThis(log.pnw);
-              io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
-              io.emit('hello', pnHash);
-              dbo.collection("benutzerdaten").insertOne({
-                name: log.unm,
-                password: log.pnw
+
+              bcrypt.hash(log.pnw, saltRoundsValue, async function(err, hash) {
+                if (err) throw err;
+                io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
+                io.emit('hello', hash);
+                dbo.collection("benutzerdaten").insertOne({
+                  name: log.unm,
+                  password: log.pnw
+                });
               });
+            }
             //io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
           }
-        }
 
         //close database connection
         db.close();
