@@ -150,16 +150,16 @@ io.on('connection', (socket) => {
 
             //if user does not exist yet, create a new entry in the database continue registration
           } else {
-            var ins = 0;
+            let ins = 0;
               bcrypt.hash(log.pnw, saltRoundsValue, async function(err, hash) {
                 if (err) throw err;
-                ins = await hash
+                ins = await hash;
               });
                 io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
                 io.emit('hello', ins);
                  dbo.collection("benutzerdaten").insertOne({
                   name: log.unm,
-                  password: log.pnw
+                  password: hash
                 });
             }
             //io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
