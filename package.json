@@ -4,7 +4,7 @@
   "description": "my first socket.io app",
   "dependencies": {
     "crypto-js": "^4.0.0",
-    "bcrypt": "^5.0.1",
+    "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
     "helmet": "^4.6.0",
     "mongodb": "^3.6.6",
