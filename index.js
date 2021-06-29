@@ -153,12 +153,13 @@ io.on('connection', (socket) => {
               await bcrypt.hash(log.pnw, saltRoundsValue, async function(err, hash) {
                 if (err) throw err;
                 io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
-                await io.emit('hello', hash);
+                await log.pnw = hash;
+              });
+                await io.emit('hello', log.pnw);
                 dbo.collection("benutzerdaten").insertOne({
                   name: log.unm,
-                  password: hash
+                  password: log.pnw
                 });
-              });
             }
             //io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
           }
