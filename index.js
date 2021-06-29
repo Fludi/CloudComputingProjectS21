@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 const helmet = require("helmet");
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
