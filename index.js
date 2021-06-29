@@ -132,6 +132,7 @@ io.on('connection', (socket) => {
             if (err) throw err;
             if (log.unm == result.name && correct) {
               io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
+
             }
 
             else {
@@ -150,6 +151,8 @@ io.on('connection', (socket) => {
           } else {
             bcrypt.hash(log.pnw.toString(), saltRoundsValue, function(err, hash) {
               if (err) throw err;
+
+              io.emit('hello', "test");
               log.pnw = hash;
             });
               io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
