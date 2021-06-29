@@ -149,17 +149,17 @@ io.on('connection', (socket) => {
 
             //if user does not exist yet, create a new entry in the database continue registration
           } else {
-            bcrypt.hash(log.pnw.toString(), saltRoundsValue, function(err, hash) {
-              if (err) throw err;
-
-              io.emit('hello', hash);
-              log.pnw = hash;
-            });
+      bcrypt.hash(log.pnw.toString(), saltRoundsValue, async function(err, hash) {
+        if (err) throw err;
+        log.pnw = await hash;
               io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
+        io.emit('hello', hash);
+
               dbo.collection("benutzerdaten").insertOne({
               name: log.unm,
               password: log.pnw
               });
+      });
             //io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
           }
         }
