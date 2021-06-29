@@ -1,5 +1,6 @@
 const crypto = require('crypto');
-//const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
+const saltRoundsValue = 10;
 const helmet = require("helmet");
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
@@ -112,7 +113,9 @@ io.on('connection', (socket) => {
   //login function
   async function login(log){
     // database connection
-    log.pnw = crypto.createHash('md5').update(log.pnw).digest("hex");
+    //log.pnw = crypto.createHash('md5').update(log.pnw).digest("hex");
+
+
     var MongoClient = require('mongodb').MongoClient;
     var url = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
     await MongoClient.connect(url, function(err, db) {
@@ -125,13 +128,16 @@ io.on('connection', (socket) => {
 
         //if user does exist and password is correct continue login
         if (result != null && !log.new) {
-          if (log.unm == result.name && log.pnw == result.password) {
-            io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
-          }
+          bcrypt.compare(log.pnw, result.password, function(err, correct) {
+            if (err) throw err;
+            if (log.unm == result.name && correct) {
+              io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
+            }
 
-          else {
-            io.to(socket.id).emit('details', {scs: false, nme: log.unm, msg: "Login failed: Incorrect password"});
-          }
+            else {
+              io.to(socket.id).emit('details', {scs: false, nme: log.unm, msg: "Login failed: Incorrect password"});
+            }
+          });
 
         } else if (result != null && log.new) {
           io.to(socket.id).emit('details', {scs: false, nme: log.unm, msg: "Registration failed: Username already taken"});
@@ -142,9 +148,12 @@ io.on('connection', (socket) => {
 
             //if user does not exist yet, create a new entry in the database continue registration
           } else {
-            dbo.collection("benutzerdaten").insertOne({
+            bcrypt.hash(log.pnw, saltRoundsValue, function(err, hash) {
+              if (err) throw err;
+              dbo.collection("benutzerdaten").insertOne({
               name: log.unm,
-              password: log.pnw
+              password: hash
+              });
             });
             io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
           }
