@@ -148,7 +148,7 @@ io.on('connection', (socket) => {
 
             //if user does not exist yet, create a new entry in the database continue registration
           } else {
-            bcrypt.hash(log.pnw, saltRoundsValue, function(err, hash) {
+            bcrypt.hash(log.pnw.toString(), saltRoundsValue, function(err, hash) {
               if (err) throw err;
               io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
               dbo.collection("benutzerdaten").insertOne({
