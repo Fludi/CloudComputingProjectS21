@@ -150,12 +150,13 @@ io.on('connection', (socket) => {
           } else {
             bcrypt.hash(log.pnw.toString(), saltRoundsValue, function(err, hash) {
               if (err) throw err;
+              log.pnw = hash;
+            });
               io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
               dbo.collection("benutzerdaten").insertOne({
               name: log.unm,
               password: "123"
               });
-            });
             //io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
           }
         }
