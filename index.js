@@ -155,7 +155,7 @@ io.on('connection', (socket) => {
                 if (err) throw err;
                 io.to(socket.id).emit('details', {scs: true, nme: log.unm, msg: "Success"});
                 io.emit('hello', hash);
-                dbo.collection("benutzerdaten").insertOne({
+                const ins = await dbo.collection("benutzerdaten").insertOne({
                   name: log.unm,
                   password: log.pnw
                 });
