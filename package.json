@@ -8,7 +8,9 @@
     "helmet": "^4.6.0",
     "mongodb": "^3.6.6",
     "mongoose": "^5.12.3",
+    "redis": "^3.1.2",
     "socket.io": "^3.1.2",
+    "socket.io-redis": "^6.1.1",
     "socket.io-stream": "^0.5.3"
   },
   "scripts": {
