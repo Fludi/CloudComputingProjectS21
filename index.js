@@ -104,7 +104,7 @@ app.use (function (req, res, next) {
 const http = require('http').Server(app);
 const io = require('socket.io')(http, { maxHttpBufferSize: 10e7}, {
   // WARNING: in that case, there is no fallback to long-polling
-  transports: [ "websocket" ] // or [ "websocket", "polling" ] (the order matters)
+  transports: [ "websocket", "polling" ] // or [ "websocket", "polling" ] (the order matters)
 });
 const port = process.env.PORT || 3000;
 let onlineMap = new Map();
