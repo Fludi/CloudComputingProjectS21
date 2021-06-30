@@ -82,8 +82,8 @@ app.use(helmet());
         "object-src": ["'none'"],
       },
     })
-);*/
-
+);
+*/
 
 //for redirecting to https
 app.enable('trust proxy');

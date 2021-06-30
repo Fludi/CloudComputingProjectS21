@@ -21,7 +21,7 @@ let newUsernameInput = document.getElementById("newUsernameInput");
 let newPasswordInput = document.getElementById("newPasswordInput");
 let fileInput = document.getElementById("fileUpload");
 let sendFile = document.getElementById("sfile");
-let image = document.getElementById("pictureUpload");
+//let image = document.getElementById("pictureUpload");
 
 let userMap;
 let subUserMap;
