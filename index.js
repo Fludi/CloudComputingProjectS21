@@ -64,23 +64,10 @@ async function getbyname(){
 //---------------------------------------------------------------------------------------------------------------------
 
 const express = require('express');
-const expressSession = require('express-session');
 const app = express();
-const cookieParser = require('cookie-parser');
 
 //Set cookie for session affinity
-app.use(
-    expressSession({
-      key: 'JSESSIONID', // use a sticky session to make sockets work
-      secret: 'arbitrary-secret',
-      cookie: {
-        maxAge: 24 * 60 * 60 * 1000, // 1 day
-        secure: true
-      },
-      saveUninitialized: true,
-      resave: false
-    })
-);
+
 
 //helmet for security header
 app.use(helmet());
