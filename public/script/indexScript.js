@@ -26,6 +26,8 @@ let subUserMap;
 let username;
 let canChat = false;
 
+
+
 //changes the form from login to register
 register.addEventListener("click", function (e) {
     e.preventDefault();

@@ -66,6 +66,8 @@ async function getbyname(){
 const express = require('express');
 const app = express();
 
+
+
 //helmet for security header
 app.use(helmet());
 /*app.use(
@@ -99,8 +101,17 @@ app.use (function (req, res, next) {
 
 const http = require('http').Server(app);
 const io = require('socket.io')(http, { maxHttpBufferSize: 10e7});
+
+
+
+const redisAdapter = require('socket.io-redis');
+io.adapter(redisAdapter({ host: 'redis-12573.c242.eu-west-1-2.ec2.cloud.redislabs.com', port: 12573, password : '0JrWgO61K6dlIMo8rXsrPOVGPn4OcwLi' }));
+
+
 const port = process.env.PORT || 3000;
 let onlineMap = new Map();
+
+
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html');

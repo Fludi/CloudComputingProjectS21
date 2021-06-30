@@ -10,6 +10,7 @@
     "mongoose": "^5.12.3",
     "redis": "^3.1.2",
     "socket.io": "^3.1.2",
+    "socket.io-adapter": "^2.3.1",
     "socket.io-redis": "^6.1.1",
     "socket.io-stream": "^0.5.3"
   },
