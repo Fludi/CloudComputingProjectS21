@@ -198,7 +198,7 @@ io.on('connection', (socket) => {
   //creates a message for every new user and updates the list of online users
   socket.on('join', name => {
     onlineMap.set(socket.id, name);
-    io.emit('hello', name + " has joined the chat " + process.env.CF_INSTANCE_INDEX  + " " + process.env.CF_INSTANCE_GUID);
+    io.emit('hello', name + " has joined the chat-instance " + process.env.CF_INSTANCE_INDEX  + " || chat id: " + process.env.CF_INSTANCE_GUID);
     io.emit('join', Array.from(onlineMap));
   });
 
