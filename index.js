@@ -1,6 +1,4 @@
-const bcrypt = require('bcrypt');
-const saltRoundsValue = 10;
-const helmet = require("helmet");
+/*
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
 
@@ -59,10 +57,11 @@ async function getbyname(){
     });
   });
 }
-
+*/
 
 //---------------------------------------------------------------------------------------------------------------------
-
+const bcrypt = require('bcrypt');
+const helmet = require("helmet");
 const express = require('express');
 const app = express();
 
