@@ -48,18 +48,18 @@ popupbox.addEventListener('submit', function(e) {
 newPopupbox.addEventListener('submit', function(e) {
     e.preventDefault();
     var file = image.files[0];
-    if (newUsernameInput.value && newPasswordInput.value && file) {
+    if (newUsernameInput.value && newPasswordInput.value /*&& file*/) {
         var reader = new FileReader();
         //sends the file according to the type of the file
         reader.onload = function () {
-        socket.emit('details', {unm: newUsernameInput.value, pnw: newPasswordInput.value, new: true, img: reader.result});
+        socket.emit('details', {unm: newUsernameInput.value, pnw: newPasswordInput.value, new: true});
         }
 
         if (file) {
         reader.readAsDataURL(file);
         }
     } else{
-        alert("Please enter username, password and upload a profile picture");
+        alert("Please enter username and password");
     }
 });
 
