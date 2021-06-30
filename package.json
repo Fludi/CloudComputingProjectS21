@@ -14,5 +14,7 @@
   "scripts": {
     "start": "node index.js"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "express-session": "^1.17.2"
+  }
 }
