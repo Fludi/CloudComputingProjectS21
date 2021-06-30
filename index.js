@@ -207,7 +207,7 @@ io.on('connection', (socket) => {
   socket.on('join', name => {
     onlineMap.set(socket.id, name);
     io.emit('hello', name + " has joined the chat on instance no. " + process.env.CF_INSTANCE_INDEX  + " || instance id: " + process.env.CF_INSTANCE_GUID);
-    io.emit('join', Array.from(onlineMap));
+    //io.emit('join', Array.from(onlineMap));
   });
 
   //creates and sends a multimedia message
@@ -240,6 +240,10 @@ io.on('connection', (socket) => {
     for (recipId of recipMap.keys()) {
       io.sockets.sockets.get(recipId).leave("multiCast");
     }
+  });
+
+  socket.on('hello', () => {
+    io.emit('join', Array.from(onlineMap));
   });
 
   //if a socket dissconnects everybody gets a message and list of online users get updated
