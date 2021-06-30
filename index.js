@@ -103,8 +103,8 @@ const io = require('socket.io')(http, { maxHttpBufferSize: 10e7});
 
 
 
-const redisAdapter = require('socket.io-redis');
-io.adapter(redisAdapter({ host: 'redis-12573.c242.eu-west-1-2.ec2.cloud.redislabs.com', port: 12573, password : '0JrWgO61K6dlIMo8rXsrPOVGPn4OcwLi' }));
+const redis = require('socket.io-redis');
+io.adapter(redis({ host: 'redis-12573.c242.eu-west-1-2.ec2.cloud.redislabs.com', port: 12573, password : '0JrWgO61K6dlIMo8rXsrPOVGPn4OcwLi' }));
 
 
 const port = process.env.PORT || 3000;
