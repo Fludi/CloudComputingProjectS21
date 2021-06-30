@@ -65,10 +65,6 @@ async function getbyname(){
 
 const express = require('express');
 const app = express();
-const sticky = require('sticky-session');
-
-//Set cookie for session affinity
-
 
 //helmet for security header
 app.use(helmet());
