@@ -91,6 +91,7 @@ socket.on("details", function(log) {
 //server sends a message for each user who joined or left the chat
 socket.on('hello', function(msg) {
     if(canChat) {
+        userMap = new Map();
         socket.emit("hello", "give now");
         var item = document.createElement('li');
         item.textContent = msg;

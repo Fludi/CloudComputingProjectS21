@@ -249,9 +249,10 @@ io.on('connection', (socket) => {
   //if a socket dissconnects everybody gets a message and list of online users get updated
   socket.on('disconnect', () => {
     if(onlineMap.has(socket.id)) {
-      io.emit('hello', onlineMap.get(socket.id) + " has left the chat");
-      io.emit('join', Array.from(onlineMap));
+      let name = onlineMap.get(socket.id)
       onlineMap.delete(socket.id);
+      io.emit('hello', name + " has left the chat");
+      //io.emit('join', Array.from(onlineMap));
     }
   });
 
