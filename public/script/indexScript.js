@@ -23,7 +23,7 @@ let fileInput = document.getElementById("fileUpload");
 let sendFile = document.getElementById("sfile");
 //let image = document.getElementById("pictureUpload");
 
-let userMap = new Map()
+let userMap;
 let subUserMap;
 let username;
 let canChat = false;
@@ -101,9 +101,7 @@ socket.on('hello', function(msg) {
 
 //creates an updated list of all online users
 socket.on('join', function(online) {
-    for (const i of online) {
-        userMap.set(i[0], i[1]);
-    }
+    userMap = new Map(online)
     user.innerHTML = " ";
     for (let person of userMap.values()) {
         var itemCheck = document.createElement('input');
