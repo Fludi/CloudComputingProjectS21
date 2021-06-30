@@ -75,7 +75,7 @@ app.use(
         //"default-src": ["'self'"],
         //"connect-src": ["'self'"],
         //"img-src": ["'self'", "data:"],
-        "media-src": ["https://ibm-simplechat.eu-de.mybluemix.net/", "data:"],
+        "media-src": ["'self'", "data:"],
         //"style-src-elem": ["'unsafe-inline'","'self'", "data:"],
         //"style-src": ["'unsafe-inline'", "'self'"],
         //"script-src": ["'unsafe-inline'", "'self'"],
