@@ -69,20 +69,20 @@ const app = express();
 
 //helmet for security header
 app.use(helmet());
-/*app.use(
+app.use(
     helmet.contentSecurityPolicy({
       directives: {
-        "default-src": ["'self'"],
-        "connect-src": ["'self'"],
-        "img-src": ["'self'", "data:"],
-        "media-src": ["'self'", "data:"],
-        "style-src-elem": ["'unsafe-inline'","'self'", "data:"],
-        "style-src": ["'unsafe-inline'", "'self'"],
-        "script-src": ["'unsafe-inline'", "'self'"],
-        "object-src": ["'none'"],
+        //"default-src": ["'self'"],
+        //"connect-src": ["'self'"],
+        //"img-src": ["'self'", "data:"],
+        "media-src": ["https://ibm-simplechat.eu-de.mybluemix.net/", "data:"],
+        //"style-src-elem": ["'unsafe-inline'","'self'", "data:"],
+        //"style-src": ["'unsafe-inline'", "'self'"],
+        //"script-src": ["'unsafe-inline'", "'self'"],
+        //"object-src": ["'none'"],
       },
     })
-);*/
+);
 
 
 //for redirecting to https
