@@ -2,6 +2,8 @@
 const socket = io("https://ibm-simplechat.eu-de.mybluemix.net/", {
     transports: [ "websocket" ]
 });
+//const socket = io();
+
 var user = document.getElementById('user');
 var usersBl = document.getElementById('users-block')
 var messages = document.getElementById('messages');
