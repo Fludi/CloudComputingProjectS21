@@ -1,6 +1,6 @@
+//disabling long-polling
 const socket = io("https://ibm-simplechat.eu-de.mybluemix.net/", {
-    // WARNING: in that case, there is no fallback to long-polling
-    transports: [ "websocket" ] // or [ "websocket", "polling" ] (the order matters)
+    transports: [ "websocket" ]
 });
 var user = document.getElementById('user');
 var usersBl = document.getElementById('users-block')

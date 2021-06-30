@@ -1,6 +1,4 @@
-const bcrypt = require('bcrypt');
-const saltRoundsValue = 10;
-const helmet = require("helmet");
+/*
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://CloudUser1:CloudComputingSS21@cloudcomputingcluster.xypsx.mongodb.net/cloudcomputingcluster?retryWrites=true&w=majority";
 
@@ -59,10 +57,11 @@ async function getbyname(){
     });
   });
 }
-
+*/
 
 //---------------------------------------------------------------------------------------------------------------------
-
+const bcrypt = require('bcrypt');
+const helmet = require("helmet");
 const express = require('express');
 const app = express();
 
@@ -209,7 +208,7 @@ io.on('connection', (socket) => {
   //creates a message for every new user and updates the list of online users
   socket.on('join', name => {
     onlineMap.set(socket.id, name);
-    io.emit('hello', name + " has joined the chat " + process.env.CF_INSTANCE_INDEX  + " " + process.env.CF_INSTANCE_GUID);
+    io.emit('hello', name + " has joined the chat on instance no. " + process.env.CF_INSTANCE_INDEX  + " || instance id: " + process.env.CF_INSTANCE_GUID);
     io.emit('join', Array.from(onlineMap));
   });
 

@@ -12,12 +12,11 @@
     "socket.io": "^3.1.2",
     "socket.io-adapter": "^2.3.1",
     "socket.io-redis": "^6.1.1",
-    "socket.io-stream": "^0.5.3"
+    "socket.io-stream": "^0.5.3",
+    "sticky-session": "^1.1.2"
   },
   "scripts": {
     "start": "node index.js"
   },
-  "devDependencies": {
-    "sticky-session": "^1.1.2"
-  }
+  "devDependencies": {}
 }
