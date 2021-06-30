@@ -110,7 +110,6 @@ const port = process.env.PORT || 3000;
 let onlineMap = new Map();
 
 
-
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html');
 });
@@ -243,13 +242,12 @@ io.on('connection', (socket) => {
     }
   });
 
-
   //if a socket dissconnects everybody gets a message and list of online users get updated
   socket.on('disconnect', () => {
     if(onlineMap.has(socket.id)) {
       io.emit('hello', onlineMap.get(socket.id) + " has left the chat");
-      onlineMap.delete(socket.id);
       io.emit('join', Array.from(onlineMap));
+      onlineMap.delete(socket.id);
     }
   });
 
