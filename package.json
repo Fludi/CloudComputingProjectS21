@@ -14,5 +14,7 @@
   "scripts": {
     "start": "node index.js"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "sticky-session": "^1.1.2"
+  }
 }
