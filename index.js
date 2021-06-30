@@ -66,6 +66,7 @@ async function getbyname(){
 const express = require('express');
 const expressSession = require('express-session');
 const app = express();
+const cookieParser = require('cookie-parser');
 
 //Set cookie for session affinity
 app.use(
